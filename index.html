@@ -5,23 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>爸，父亲节快乐</title>
 
+<!-- Noto Serif SC — 给中文情感文字最好的衬线字体 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
+
 <script>
 /* ================================================================
-   CONFIG — 只改这里，页面自动更新
+   CONFIG — 只改这里，整个页面跟着变
    plan: "basic"   → 9.9 纯文字版
-   plan: "premium" → 19.9 完整版（照片/时间轴/录音/修复对比）
+   plan: "premium" → 19.9 全功能版
 ================================================================ */
 const CONFIG = {
   plan: "premium",
 
-  /* ─── 必填 ─── */
-  fatherName:   "爸爸",
-  childName:    "小明",
-  fatherBirthYear: 1968,      // 用于计算"相伴X年"
-  childBirthYear:  2002,      // 孩子出生年
-  date:         "2026年6月21日",
-  openingQuote: "有些话，我一直藏在心里很多年，今天想说出来。",
-  keywords:     ["沉默", "责任", "撑家", "不善言辞", "山一样"],
+  fatherName:      "爸爸",
+  childName:       "小明",
+  childBirthYear:  2002,
+  date:            "2026年6月21日",
+
+  openingQuote: "有些话，我一直藏在心里很多年。今天，我想说出来。",
+
+  keywords: ["沉默", "责任", "撑家", "不善言辞", "山一样的人"],
 
   letter: {
     p1: "小时候我总觉得你是个严肃的人。你很少开口，但家里的每一件事你都记着——电费涨了你知道，我成绩单来了你知道，我鞋子小了你也知道。只是那时我太小，读不懂沉默里藏着多少话。",
@@ -32,351 +37,840 @@ const CONFIG = {
 
   sendMessage: "爸，父亲节快乐。这些年辛苦了，谢谢你。我爱你。",
 
-  /* ─── premium 专属 ─── */
+  /* ── premium 专属 ── */
   photos: [
-    { url: "https://picsum.photos/seed/fam1/480/360", caption: "那年夏天" },
-    { url: "https://picsum.photos/seed/fam2/480/360", caption: "我们家" },
-    { url: "https://picsum.photos/seed/fam3/480/360", caption: "最喜欢这张" },
-    { url: "https://picsum.photos/seed/fam4/480/360", caption: "在一起" },
+    { url: "https://picsum.photos/seed/fam1/480/480", caption: "那年夏天" },
+    { url: "https://picsum.photos/seed/fam2/480/480", caption: "我们家" },
+    { url: "https://picsum.photos/seed/fam3/480/480", caption: "最喜欢这张" },
+    { url: "https://picsum.photos/seed/fam4/480/480", caption: "在一起" },
   ],
 
   timeline: [
     { year: "2002", text: "我来到这个世界，你第一次当爸爸" },
-    { year: "2009", text: "你每天骑车送我上小学，从没迟到过" },
+    { year: "2009", text: "你每天骑车送我上小学，从没迟到过一次" },
     { year: "2015", text: "我考上初中，你悄悄红了眼眶" },
-    { year: "2020", text: "我第一次离家，你塞给我一个红包没说话" },
+    { year: "2020", text: "我第一次离家，你塞给我一个红包，什么都没说" },
     { year: "2026", text: "今天，我想好好谢谢你" },
   ],
 
-  restorationBefore: "https://picsum.photos/seed/old1bw/400/500",
-  restorationAfter:  "https://picsum.photos/seed/new1/400/500",
+  restorationBefore: "https://picsum.photos/seed/oldb/400/520",
+  restorationAfter:  "https://picsum.photos/seed/newa/400/520",
 
-  audioUrl:   "",   // 录音文件 URL 或 base64
-  bgMusicUrl: "",   // 背景音乐 URL
+  audioUrl:   "",
+  bgMusicUrl: "",
 };
 </script>
 
 <style>
+/* ── 重置 & 基础 ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --cream:      #FFF8F0;
+  /* 墨色系 (英雄/结尾) */
+  --ink:        #0C0701;
+  --ink-m:      #1C0E04;
+  --ink-l:      #2A1808;
+
+  /* 金色系 */
   --gold:       #C8860A;
-  --gold-l:     #F0B429;
-  --amber:      #E8960A;
-  --brown:      #4A2C0A;
-  --brown-m:    #7A4A1E;
-  --text:       #3D2B1F;
-  --muted:      #8B6B4A;
-  --shadow:     rgba(92,58,30,0.12);
-  --radius:     16px;
+  --gold-w:     #E8A020;
+  --gold-s:     #F2BE50;
+  --gold-glow:  rgba(232, 160, 32, 0.22);
+
+  /* 暖白系 (正文区) */
+  --cream:      #FDFAF5;
+  --cream2:     #FFF7EC;
+  --paper:      #FEFCF8;
+
+  /* 文字 */
+  --t-dark:  #1A0E04;
+  --t-mid:   #5C3A18;
+  --t-soft:  #8A6038;
+  --t-muted: #B09070;
+
+  /* 阴影 */
+  --sh-s: 0 2px 12px rgba(20,10,3,.07);
+  --sh-m: 0 4px 28px rgba(20,10,3,.11);
+  --sh-l: 0 10px 56px rgba(20,10,3,.16);
+
+  --serif: "Noto Serif SC", "STSong", "SimSun", Georgia, serif;
+  --sans:  -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--cream);
-  color: var(--text);
-  font-family: -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
+  background: var(--ink);
+  color: var(--t-dark);
+  font-family: var(--sans);
   line-height: 1.85;
   overflow-x: hidden;
 }
 
+/* ── 加载屏 ── */
+#loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .6s ease, visibility .6s ease;
+}
+#loader.out { opacity: 0; visibility: hidden; }
+.loader-bloom {
+  font-size: 40px;
+  animation: loaderPulse 1.2s ease-in-out infinite;
+}
+@keyframes loaderPulse {
+  0%,100% { transform: scale(1); opacity: 0.6; }
+  50%      { transform: scale(1.3); opacity: 1; }
+}
+
 /* ── 花瓣 ── */
-#petals { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+#petals { position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
 .petal  { position:absolute; top:-40px; opacity:0; animation:fallPetal linear infinite; user-select:none; }
 @keyframes fallPetal {
-  0%   { opacity:0;   transform:translateY(-40px) rotate(0deg); }
-  10%  { opacity:0.65; }
-  90%  { opacity:0.4; }
-  100% { opacity:0;   transform:translateY(108vh) rotate(560deg) translateX(30px); }
+  0%   { opacity:0;   transform:translateY(-40px) rotate(0deg) translateX(0); }
+  8%   { opacity:.6; }
+  92%  { opacity:.4; }
+  100% { opacity:0;   transform:translateY(108vh) rotate(580deg) translateX(25px); }
 }
 
-/* ── 容器 ── */
-#app { position:relative; z-index:1; max-width:430px; margin:0 auto; }
-
-/* ── 封面 ── */
-#cover {
-  min-height: 100svh;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; padding:70px 32px 64px; position:relative;
-  background:linear-gradient(175deg,#FFF8F0 0%,#FFE8B8 100%);
-}
-.cv-badge  { font-size:11px; letter-spacing:7px; color:var(--gold); margin-bottom:24px; opacity:0; animation:fadeUp 1s ease 0.4s forwards; }
-.cv-name   { font-size:clamp(54px,17vw,76px); font-weight:800; color:var(--brown); letter-spacing:8px; line-height:1; opacity:0; animation:fadeUp 1s ease 0.7s forwards; }
-.cv-sub    { font-size:17px; color:var(--brown-m); margin-top:18px; opacity:0; animation:fadeUp 1s ease 1s forwards; }
-.cv-flower { font-size:42px; margin:26px 0; opacity:0; animation:fadeUp 1s ease 1.2s forwards, floatF 4s ease-in-out 2.2s infinite; }
-.cv-date   { font-size:12px; color:var(--gold); letter-spacing:4px; opacity:0; animation:fadeUp 1s ease 1.4s forwards; }
-.cv-arrow  { position:absolute; bottom:32px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:6px; color:var(--muted); font-size:11px; letter-spacing:2px; opacity:0; animation:fadeUp 1s ease 2.2s forwards; }
-.arrow-v   { width:18px; height:18px; border-right:2px solid var(--gold); border-bottom:2px solid var(--gold); transform:rotate(45deg); animation:aBounce 1.5s ease infinite; }
-@keyframes aBounce   { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(5px)} }
-@keyframes floatF    { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-10px) rotate(8deg)} }
+/* ── 主容器 ── */
+#app { position:relative; z-index:2; max-width:430px; margin:0 auto; }
 
 /* ── 通用 section ── */
-.section {
-  padding:56px 28px;
-  opacity:0; transform:translateY(28px);
-  transition:opacity .75s ease, transform .75s ease;
+.sec {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
 }
-.section.vis { opacity:1; transform:translateY(0); }
-.sec-label   { font-size:11px; letter-spacing:5px; color:var(--gold); text-align:center; margin-bottom:24px; }
+.sec.vis { opacity:1; transform:translateY(0); }
 
-/* ── 引言 ── */
-#quote {
-  text-align:center;
-  background:linear-gradient(160deg,#FFF8F0,#FFF0DC);
-  border-top:1px solid rgba(200,134,10,.12); border-bottom:1px solid rgba(200,134,10,.12);
+.sec-inner { padding: 60px 28px; }
+.sec-light { background: var(--cream); }
+.sec-warm  { background: var(--cream2); }
+.sec-alt   { background: var(--paper); }
+.sec-dark  { background: var(--ink); }
+
+/* ── 通用标签 ── */
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 28px;
 }
-.q-mark { font-size:64px; color:var(--gold-l); opacity:.3; font-family:Georgia,serif; line-height:.6; margin-bottom:10px; display:block; }
-.q-body { font-size:20px; color:var(--brown); font-weight:500; line-height:1.75; }
+.eyebrow-light { color: rgba(232,160,32,.7); }
+.sec-desc { font-size:13px; color:var(--t-muted); text-align:center; margin-top:-16px; margin-bottom:24px; }
 
-/* ── 数字统计 ── */
-#stats { text-align:center; background:var(--cream); }
-.stats-row { display:flex; justify-content:center; gap:0; margin-top:8px; }
-.stat-item {
-  flex:1; max-width:120px;
-  padding:20px 8px;
-  position:relative;
+/* ════════════════════════════════════
+   ① HERO — 墨黑舞台，金字登场
+════════════════════════════════════ */
+#hero {
+  min-height: 100svh;
+  background: radial-gradient(ellipse at 50% 38%, var(--ink-l) 0%, var(--ink) 72%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 80px 32px 60px;
+  position: relative;
+  opacity: 1; transform: none; /* hero 不需要 scroll reveal */
 }
-.stat-item + .stat-item::before {
-  content:''; position:absolute; left:0; top:30%; height:40%;
-  width:1px; background:rgba(200,134,10,.2);
+
+.hero-eye {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 8px;
+  color: rgba(232,160,32,.55);
+  margin-bottom: 32px;
+  animation: fadeUp .8s ease .3s both;
 }
-.stat-num  { font-size:36px; font-weight:800; color:var(--brown); line-height:1; display:block; }
-.stat-unit { font-size:12px; color:var(--gold); letter-spacing:2px; margin-top:4px; display:block; }
 
-/* ── 关键词 ── */
-#keywords { text-align:center; }
-.kw-wrap  { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-.kw-tag   {
-  padding:8px 20px;
-  border:1.5px solid rgba(200,134,10,.45); border-radius:50px;
-  font-size:15px; color:var(--brown-m);
-  background:rgba(240,180,41,.07);
-  opacity:0; transform:scale(.85);
-  transition:opacity .4s ease, transform .4s ease;
+.hero-name {
+  font-family: var(--serif);
+  font-size: clamp(58px, 18vw, 88px);
+  font-weight: 900;
+  color: var(--gold-w);
+  letter-spacing: 12px;
+  line-height: 1;
+  margin-bottom: 28px;
+  text-shadow: 0 0 80px var(--gold-glow), 0 0 160px rgba(232,160,32,.08);
+  min-height: 1.1em; /* 防止字符未渲染时跳动 */
 }
-.kw-tag.vis { opacity:1; transform:scale(1); }
 
-/* ── 分隔 ── */
-.divider { display:flex; align-items:center; gap:12px; padding:0 28px; opacity:.3; }
-.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--amber); }
-
-/* ── 信件 ── */
-#letter { background:linear-gradient(160deg,#FFFAF5,#FFF5E8); border-top:1px solid rgba(200,134,10,.1); border-bottom:1px solid rgba(200,134,10,.1); }
-.letter-body { background:white; border-radius:var(--radius); padding:28px 22px; box-shadow:0 4px 24px var(--shadow); }
-.letter-p    { font-size:15.5px; color:var(--text); line-height:2.05; text-indent:2em; margin-bottom:20px; }
-.letter-p:last-child { margin-bottom:0; }
-
-/* ── 签名 ── */
-#signature { padding:28px 28px 48px; text-align:right; }
-.sig-child { font-size:20px; color:var(--brown); font-weight:700; letter-spacing:2px; }
-.sig-date  { font-size:13px; color:var(--muted); margin-top:6px; }
-
-/* ── 照片相册（premium）── */
-#photos { padding:56px 0; }
-.photo-scroll {
-  display:flex; gap:14px;
-  overflow-x:auto; padding:4px 28px 16px;
-  scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory;
+/* 每个汉字独立动画 */
+.hero-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(36px) scale(.9);
+  animation: charIn .9s cubic-bezier(.16,1,.3,1) forwards;
 }
-.photo-scroll::-webkit-scrollbar { display:none; }
-.photo-card { flex-shrink:0; width:220px; border-radius:14px; overflow:hidden; box-shadow:0 6px 24px var(--shadow); scroll-snap-align:start; }
-.photo-card img   { width:100%; height:165px; object-fit:cover; display:block; }
-.photo-caption    { font-size:12px; color:var(--muted); text-align:center; padding:8px 0 6px; background:white; letter-spacing:1px; }
-
-/* ── 时间轴（premium）── */
-#timeline { padding:56px 28px; }
-.tl-wrap  { position:relative; padding-left:28px; margin-top:8px; }
-.tl-wrap::before { content:''; position:absolute; left:8px; top:4px; bottom:4px; width:2px; background:linear-gradient(180deg,var(--gold-l),var(--amber)); border-radius:2px; }
-.tl-item  { position:relative; margin-bottom:28px; }
-.tl-item:last-child { margin-bottom:0; }
-.tl-dot   { position:absolute; left:-24px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 3px rgba(200,134,10,.2); }
-.tl-year  { font-size:12px; color:var(--gold); letter-spacing:2px; margin-bottom:4px; }
-.tl-text  { font-size:15px; color:var(--text); line-height:1.7; }
-
-/* ── 修复对比（premium）── */
-#restoration { text-align:center; }
-.restore-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px; }
-.restore-card { border-radius:14px; overflow:hidden; box-shadow:0 4px 18px var(--shadow); }
-.restore-card img { width:100%; height:180px; object-fit:cover; display:block; }
-.restore-lbl  { font-size:11px; color:var(--muted); letter-spacing:2px; padding:9px 0; background:white; text-align:center; }
-
-/* ── 录音（premium）── */
-#audio-sec { text-align:center; }
-.audio-card  { background:linear-gradient(135deg,#FFF3E0,#FFE5B4); border-radius:20px; padding:32px 24px; box-shadow:0 4px 24px var(--shadow); }
-.audio-hint  { font-size:14px; color:var(--muted); margin-bottom:24px; }
-.play-btn    { width:64px; height:64px; border-radius:50%; background:var(--gold); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; box-shadow:0 4px 20px rgba(200,134,10,.45); transition:transform .15s; }
-.play-btn:active { transform:scale(.93); }
-.play-btn svg    { width:26px; height:26px; fill:white; }
-.prog-wrap   { height:4px; background:rgba(200,134,10,.2); border-radius:2px; overflow:hidden; }
-.prog-fill   { height:100%; background:var(--gold); border-radius:2px; width:0%; transition:width .1s linear; }
-
-/* ── 发给爸爸 ── */
-#send-msg { text-align:center; }
-.send-card  { background:white; border:1.5px solid rgba(200,134,10,.2); border-radius:20px; padding:32px 24px; box-shadow:0 4px 20px var(--shadow); }
-.send-hint  { font-size:11px; letter-spacing:3px; color:var(--gold); margin-bottom:16px; }
-.send-text  { font-size:18px; color:var(--brown); line-height:1.8; margin-bottom:28px; font-weight:500; }
-.copy-btn   { display:inline-flex; align-items:center; gap:8px; padding:15px 36px; background:var(--gold); color:white; border:none; border-radius:50px; font-size:16px; font-family:inherit; cursor:pointer; box-shadow:0 4px 18px rgba(200,134,10,.4); transition:all .2s; letter-spacing:1px; }
-.copy-btn:active  { transform:scale(.96); }
-.copy-btn.ok { background:#2D9C5A; box-shadow:0 4px 18px rgba(45,156,90,.4); }
-
-/* ── 结尾仪式感卡片 ── */
-#closing {
-  margin:0 28px 60px;
-  background:linear-gradient(135deg,#4A2C0A,#7A4A1E);
-  border-radius:24px;
-  padding:40px 28px;
-  text-align:center;
-  box-shadow:0 8px 32px rgba(74,44,10,.35);
-  opacity:0; transform:translateY(28px);
-  transition:opacity .75s ease, transform .75s ease;
+@keyframes charIn {
+  to { opacity:1; transform:translateY(0) scale(1); }
 }
-#closing.vis { opacity:1; transform:translateY(0); }
-.closing-flower { font-size:32px; margin-bottom:16px; }
-.closing-line1  { font-size:22px; color:#FFE0A0; font-weight:700; letter-spacing:4px; margin-bottom:10px; }
-.closing-line2  { font-size:14px; color:rgba(255,224,160,.65); letter-spacing:2px; }
 
-/* ── 尾部 ── */
-#footer { text-align:center; padding:0 28px 90px; font-size:12px; color:var(--muted); opacity:.45; }
+.hero-sub {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: rgba(255,240,200,.45);
+  letter-spacing: 3px;
+  animation: fadeUp .8s ease 1.6s both;
+}
+
+.hero-date {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: rgba(232,160,32,.4);
+  letter-spacing: 4px;
+  margin-top: 36px;
+  animation: fadeUp .8s ease 1.9s both;
+}
+
+.hero-scroll {
+  position: absolute; bottom: 36px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  animation: fadeUp .8s ease 2.4s both;
+}
+.scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(180deg, transparent, rgba(232,160,32,.5));
+  animation: scrollLine 2s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0%,100% { transform:scaleY(0); transform-origin:top; }
+  50%      { transform:scaleY(1); transform-origin:top; }
+}
+.scroll-txt {
+  font-size: 10px; letter-spacing:3px;
+  color: rgba(232,160,32,.35);
+}
+
+/* ════════════════════════════════════
+   ② QUOTE — 一句话，全场静默
+════════════════════════════════════ */
+#quote-sec .sec-inner { padding: 72px 36px; }
+
+.quote-wrap {
+  display: flex; flex-direction: column; align-items: center;
+}
+.quote-bar {
+  width: 2px; height: 40px;
+  background: linear-gradient(180deg, transparent, var(--gold));
+  margin-bottom: 24px; border-radius: 2px;
+}
+.quote-text {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 400;
+  color: var(--t-dark);
+  line-height: 1.85;
+  text-align: center;
+  position: relative;
+}
+.quote-text::before {
+  content: '\201C';
+  font-family: Georgia, serif;
+  font-size: 80px;
+  color: var(--gold-s);
+  opacity: .18;
+  position: absolute;
+  top: -20px; left: -12px;
+  line-height: 1;
+}
+
+/* ════════════════════════════════════
+   ③ STATS — 数字承载时间的重量
+════════════════════════════════════ */
+#stats-sec .sec-inner { padding: 56px 28px; }
+
+.stats-grid {
+  display: flex; align-items: stretch;
+  justify-content: center; gap: 0;
+  margin-top: 4px;
+}
+.stat-block {
+  flex: 1; max-width: 110px;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 16px 8px;
+}
+.stat-num {
+  font-family: var(--serif);
+  font-size: 38px; font-weight: 900;
+  color: var(--t-dark); line-height: 1;
+  display: block;
+}
+.stat-label {
+  font-size: 13px; color: var(--gold);
+  font-weight: 600; margin-top: 2px;
+  display: block;
+}
+.stat-desc {
+  font-size: 11px; color: var(--t-muted);
+  letter-spacing: 1px; margin-top: 6px;
+}
+.stat-divider {
+  width: 1px; background: rgba(200,134,10,.18);
+  margin: 12px 0; border-radius: 1px; align-self: stretch;
+}
+
+/* ════════════════════════════════════
+   ④ KEYWORDS — 每个词，一幅画
+════════════════════════════════════ */
+#keywords-sec .sec-inner { padding: 56px 28px; }
+
+.kw-poem {
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.kw-line {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 18px;
+}
+.kw-line:last-child { margin-bottom: 0; }
+.kw-he {
+  font-family: var(--serif);
+  font-size: 13px; color: var(--t-muted);
+  letter-spacing: 2px;
+}
+.kw-word {
+  font-family: var(--serif);
+  font-size: 24px; font-weight: 700;
+  color: var(--t-dark);
+  position: relative;
+  opacity: 0; transform: translateX(-16px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.kw-word.vis { opacity:1; transform:translateX(0); }
+.kw-word::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0; height: 2px;
+  background: var(--gold-s); opacity: .45;
+  border-radius: 1px;
+}
+
+/* ════════════════════════════════════
+   ⑤ LETTER — 一封信的质感
+════════════════════════════════════ */
+#letter-sec .sec-inner { padding: 56px 20px; }
+
+.letter-card {
+  background: var(--paper);
+  border-radius: 18px;
+  padding: 36px 26px 28px;
+  box-shadow: var(--sh-l),
+    inset 0 1px 0 rgba(255,255,255,.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.letter-wm {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: var(--serif);
+  font-size: 220px; font-weight: 900;
+  color: rgba(200,134,10,.032);
+  pointer-events: none; user-select: none;
+  line-height: 1;
+}
+
+.letter-p {
+  font-family: var(--serif);
+  font-size: 15.5px; font-weight: 400;
+  color: var(--t-dark);
+  line-height: 2.1;
+  text-indent: 2em;
+  margin-bottom: 22px;
+  position: relative; z-index: 1;
+}
+.letter-p:last-child { margin-bottom: 0; }
+
+.letter-sig {
+  margin-top: 28px; padding-top: 20px;
+  border-top: 1px solid rgba(200,134,10,.15);
+  text-align: right;
+  position: relative; z-index: 1;
+}
+.sig-name {
+  font-family: var(--serif);
+  font-size: 19px; font-weight: 700;
+  color: var(--t-dark); letter-spacing: 2px;
+}
+.sig-date {
+  font-size: 12px; color: var(--t-muted);
+  margin-top: 5px; letter-spacing: 1px;
+}
+
+/* ════════════════════════════════════
+   ⑥ PHOTOS — 宝丽来，留住时光
+════════════════════════════════════ */
+#photos-sec { padding: 60px 0 20px; }
+#photos-sec .eyebrow { padding: 0 28px; }
+
+.polaroid-rail {
+  display: flex; gap: 20px;
+  overflow-x: auto; padding: 16px 28px 20px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+.polaroid-rail::-webkit-scrollbar { display:none; }
+
+.polaroid {
+  flex-shrink: 0; width: 200px;
+  background: white;
+  border-radius: 4px;
+  padding: 10px 10px 28px;
+  box-shadow: 0 8px 32px rgba(20,10,3,.14), 0 2px 6px rgba(20,10,3,.06);
+  scroll-snap-align: center;
+}
+/* 拟物旋转感 */
+.polaroid:nth-child(2n)   { transform: rotate(1.8deg); }
+.polaroid:nth-child(3n)   { transform: rotate(-1.2deg); }
+.polaroid:nth-child(4n)   { transform: rotate(2.4deg); }
+.polaroid:nth-child(5n)   { transform: rotate(-0.8deg); }
+
+.polaroid img {
+  width: 100%; height: 180px;
+  object-fit: cover; display: block;
+  border-radius: 2px;
+}
+.polaroid-cap {
+  font-family: var(--serif);
+  font-size: 12px; color: var(--t-soft);
+  text-align: center;
+  margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+/* ════════════════════════════════════
+   ⑦ TIMELINE — 一条线，一个人的故事
+════════════════════════════════════ */
+#timeline-sec .sec-inner { padding: 60px 28px; }
+
+.tl-body {
+  position: relative; padding-left: 32px; margin-top: 8px;
+}
+.tl-body::before {
+  content: '';
+  position: absolute; left: 6px; top: 6px; bottom: 6px; width: 2px;
+  background: linear-gradient(180deg, var(--gold-s), var(--gold));
+  border-radius: 2px;
+}
+
+.tl-item { position: relative; margin-bottom: 32px; }
+.tl-item:last-child { margin-bottom: 0; }
+
+.tl-dot {
+  position: absolute; left: -30px; top: 5px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 4px rgba(200,134,10,.15), 0 0 12px rgba(200,134,10,.3);
+}
+
+.tl-year {
+  font-family: var(--sans);
+  font-size: 11px; color: var(--gold);
+  letter-spacing: 3px; margin-bottom: 5px;
+}
+.tl-text {
+  font-family: var(--serif);
+  font-size: 16px; color: var(--t-dark); line-height: 1.75;
+}
+
+/* ════════════════════════════════════
+   ⑧ RESTORATION — 可拖拽对比滑块
+════════════════════════════════════ */
+#restore-sec .sec-inner { padding: 60px 28px; }
+
+.restore-container {
+  position: relative;
+  width: 100%; height: 320px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--sh-m);
+  margin-top: 20px;
+  touch-action: none;
+  cursor: col-resize;
+}
+
+.rs-layer {
+  position: absolute; inset: 0;
+}
+.rs-layer img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.rs-after {
+  clip-path: inset(0 50% 0 0);
+  transition: clip-path 0s;
+}
+
+.rs-handle {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 44px;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 10;
+  gap: 0;
+}
+.rs-line {
+  flex: 1; width: 2px;
+  background: rgba(255,255,255,.9);
+  border-radius: 2px;
+}
+.rs-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: white;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  flex-shrink: 0;
+}
+.rs-btn svg { width: 18px; height: 18px; }
+
+.rs-tags {
+  position: absolute; bottom: 14px;
+  left: 0; right: 0;
+  display: flex; justify-content: space-between;
+  padding: 0 16px;
+  pointer-events: none;
+}
+.rs-tag {
+  font-family: var(--sans);
+  font-size: 11px; letter-spacing: 3px;
+  color: white;
+  background: rgba(0,0,0,.38);
+  padding: 4px 10px; border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+/* ════════════════════════════════════
+   ⑨ AUDIO — 亲口说的话
+════════════════════════════════════ */
+#audio-sec .sec-inner { padding: 60px 28px; }
+
+.audio-card {
+  background: linear-gradient(135deg, #FFF3E0, #FFECC0);
+  border-radius: 20px; padding: 32px 24px;
+  box-shadow: var(--sh-m);
+  text-align: center;
+}
+.audio-hint { font-size:14px; color:var(--t-soft); margin-bottom:24px; font-family:var(--serif); }
+
+.audio-wave {
+  display: flex; align-items: center; justify-content: center;
+  gap: 3px; height: 36px; margin-bottom: 24px;
+}
+.wave-bar {
+  width: 3px; border-radius: 3px;
+  background: var(--gold);
+  animation: wavePulse 1.2s ease-in-out infinite;
+}
+@keyframes wavePulse {
+  0%,100% { height: 8px; opacity:.4; }
+  50%      { height: 28px; opacity:1; }
+}
+
+.audio-play {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: var(--gold); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 20px rgba(200,134,10,.45);
+  transition: transform .15s;
+}
+.audio-play:active { transform: scale(.92); }
+.audio-play svg { width: 26px; height: 26px; fill: white; margin-left: 3px; }
+
+.audio-prog-wrap { height: 4px; background: rgba(200,134,10,.2); border-radius: 2px; overflow: hidden; }
+.audio-prog-fill { height: 100%; background: var(--gold); border-radius: 2px; width: 0%; transition: width .1s linear; }
+
+/* ════════════════════════════════════
+   ⑩ SEND — 发给爸爸
+════════════════════════════════════ */
+#send-sec .sec-inner { padding: 70px 28px 60px; text-align: center; }
+
+/* 微信气泡样式 */
+.wechat-mockup {
+  background: #EDEDED;
+  border-radius: 16px;
+  padding: 20px 18px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+.wechat-row {
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.wechat-avatar {
+  width: 38px; height: 38px; border-radius: 8px;
+  background: linear-gradient(135deg, #6CA9D4, #4A80B0);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.wechat-bubble {
+  background: white;
+  border-radius: 0 10px 10px 10px;
+  padding: 12px 14px;
+  font-size: 15px; color: #111;
+  line-height: 1.7; flex: 1;
+  font-family: var(--sans);
+  position: relative;
+}
+.wechat-bubble::before {
+  content: '';
+  position: absolute; top: 10px; left: -6px;
+  width: 0; height: 0;
+  border: 6px solid transparent;
+  border-right-color: white;
+  border-left: 0;
+}
+.wechat-name {
+  font-size: 11px; color: #888; margin-bottom: 4px;
+}
+
+.send-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 40px;
+  background: var(--gold-w); color: white;
+  border: none; border-radius: 50px;
+  font-size: 17px; font-family: var(--sans);
+  font-weight: 600; letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(200,134,10,.4);
+  transition: transform .15s, box-shadow .15s;
+}
+.send-btn:active { transform: scale(.96); box-shadow: 0 2px 10px rgba(200,134,10,.4); }
+.send-btn.ok    { background: #27AE60; box-shadow: 0 4px 20px rgba(39,174,96,.4); }
+.send-hint-txt  { font-size: 12px; color: rgba(255,240,200,.35); margin-top: 16px; letter-spacing: 2px; }
+
+/* ════════════════════════════════════
+   ⑪ CLOSING — 与英雄遥遥呼应
+════════════════════════════════════ */
+#closing-sec { background: radial-gradient(ellipse at 50% 60%, var(--ink-l) 0%, var(--ink) 70%); }
+#closing-sec .sec-inner {
+  padding: 80px 32px 90px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+
+.closing-petal { font-size: 36px; margin-bottom: 24px; animation: floatPetal 4s ease-in-out infinite; }
+@keyframes floatPetal { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-10px) rotate(10deg)} }
+
+.closing-to {
+  font-family: var(--serif);
+  font-size: 28px; font-weight: 700;
+  color: var(--gold-w); letter-spacing: 6px;
+  margin-bottom: 16px;
+}
+.closing-msg {
+  font-family: var(--serif);
+  font-size: 15px; color: rgba(255,240,200,.5);
+  letter-spacing: 2px; margin-bottom: 40px;
+}
+.closing-divider {
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin-bottom: 24px;
+}
+.closing-from {
+  font-size: 13px; color: rgba(232,160,32,.55);
+  letter-spacing: 3px; margin-bottom: 6px;
+}
+.closing-date {
+  font-size: 11px; color: rgba(232,160,32,.3);
+  letter-spacing: 3px;
+}
 
 /* ── 背景音乐 FAB ── */
 #music-fab {
-  position:fixed; bottom:28px; right:18px; width:50px; height:50px;
-  border-radius:50%; background:var(--gold); border:none; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 4px 18px rgba(200,134,10,.45); z-index:999;
+  position: fixed; bottom: 28px; right: 18px;
+  width: 50px; height: 50px; border-radius: 50%;
+  background: var(--gold); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 18px rgba(200,134,10,.5); z-index: 999;
 }
-#music-fab.spin { animation:mSpin 3s linear infinite; }
-#music-fab svg  { width:22px; height:22px; fill:white; }
-@keyframes mSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+#music-fab.spin { animation: mSpin 3s linear infinite; }
+#music-fab svg  { width: 22px; height: 22px; fill: white; }
+@keyframes mSpin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
 
-/* ── 动效 ── */
-@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+/* ── 通用动效 ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
-/* premium-only 默认隐藏 */
-.premium-only { display:none; }
+/* ── premium-only 默认隐藏 ── */
+.premium-only { display: none; }
 </style>
 </head>
 <body>
 
+<!-- 加载屏 -->
+<div id="loader"><div class="loader-bloom">🌸</div></div>
+
+<!-- 花瓣 -->
 <div id="petals"></div>
 
+<!-- 主体 -->
 <div id="app">
 
-  <!-- ① 封面 -->
-  <section id="cover">
-    <p class="cv-badge">父 亲 节 礼 物</p>
-    <h1 class="cv-name" id="coverName">爸爸</h1>
-    <p class="cv-sub">这份礼物，专属于你</p>
-    <div class="cv-flower">🌸</div>
-    <p class="cv-date" id="coverDate"></p>
-    <div class="cv-arrow"><div class="arrow-v"></div><span>向下翻</span></div>
-  </section>
-
-  <!-- ② 引言 -->
-  <section id="quote" class="section">
-    <p class="sec-label">写 给 你 的 话</p>
-    <span class="q-mark">"</span>
-    <p class="q-body" id="quoteText"></p>
-  </section>
-
-  <!-- ③ 岁月数字 -->
-  <section id="stats" class="section">
-    <p class="sec-label">我们的时光</p>
-    <div class="stats-row">
-      <div class="stat-item"><span class="stat-num" id="yearsNum">--</span><span class="stat-unit">年</span></div>
-      <div class="stat-item"><span class="stat-num" id="daysNum">--</span><span class="stat-unit">个日夜</span></div>
-      <div class="stat-item"><span class="stat-num">♾</span><span class="stat-unit">的爱</span></div>
+  <!-- ① HERO -->
+  <section id="hero">
+    <p class="hero-eye">父 亲 节 礼 物</p>
+    <h1 class="hero-name" id="heroName" aria-label="父亲名字"></h1>
+    <p class="hero-sub">这份礼物，专属于你</p>
+    <p class="hero-date" id="heroDate"></p>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <p class="scroll-txt">向 下 翻 阅</p>
     </div>
   </section>
 
-  <!-- ④ 关键词 -->
-  <section id="keywords" class="section">
-    <p class="sec-label">我 眼 中 的 你</p>
-    <div class="kw-wrap" id="kwWrap"></div>
-  </section>
-
-  <div class="divider">🌼</div>
-
-  <!-- ⑤ 信件 -->
-  <section id="letter" class="section">
-    <p class="sec-label">我 想 对 你 说</p>
-    <div class="letter-body" id="letterBody"></div>
-  </section>
-
-  <!-- ⑥ 签名 -->
-  <div id="signature" class="section">
-    <p class="sig-child" id="sigChild"></p>
-    <p class="sig-date"  id="sigDate"></p>
-  </div>
-
-  <!-- ⑦ 照片相册（premium）-->
-  <section id="photos" class="section premium-only">
-    <p class="sec-label" style="padding:0 28px">我 们 的 记 忆</p>
-    <div class="photo-scroll" id="photoScroll"></div>
-  </section>
-
-  <!-- ⑧ 时间轴（premium）-->
-  <section id="timeline" class="section premium-only">
-    <p class="sec-label">时 光 轴</p>
-    <div class="tl-wrap" id="tlWrap"></div>
-  </section>
-
-  <div class="divider premium-only">🌺</div>
-
-  <!-- ⑨ 旧照修复（premium）-->
-  <section id="restoration" class="section premium-only">
-    <p class="sec-label">时 光 修 复</p>
-    <p style="font-size:14px;color:var(--muted);text-align:center;margin-bottom:4px">把老照片还原成新的样子</p>
-    <div class="restore-grid">
-      <div class="restore-card">
-        <img id="restoreBefore" src="" alt="修复前">
-        <p class="restore-lbl">从 前</p>
-      </div>
-      <div class="restore-card">
-        <img id="restoreAfter" src="" alt="修复后">
-        <p class="restore-lbl">修 复 后</p>
+  <!-- ② QUOTE -->
+  <section id="quote-sec" class="sec sec-light">
+    <div class="sec-inner">
+      <div class="quote-wrap">
+        <div class="quote-bar"></div>
+        <p class="quote-text" id="quoteText"></p>
       </div>
     </div>
   </section>
 
-  <!-- ⑩ 录音（premium，有 audioUrl 才显示）-->
-  <section id="audio-sec" class="section premium-only">
-    <p class="sec-label">亲 口 说 的 话</p>
-    <div class="audio-card">
-      <p class="audio-hint">点击播放，听我亲口说给你听</p>
-      <button class="play-btn" id="playBtn" onclick="toggleAudio()">
-        <svg id="playIcon" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-      </button>
-      <div class="prog-wrap"><div class="prog-fill" id="progFill"></div></div>
+  <!-- ③ STATS -->
+  <section id="stats-sec" class="sec sec-alt">
+    <div class="sec-inner">
+      <p class="eyebrow">我 们 的 时 光</p>
+      <div class="stats-grid">
+        <div class="stat-block">
+          <span class="stat-num" id="yearsNum">0</span>
+          <span class="stat-label">年</span>
+          <p class="stat-desc">相伴岁月</p>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-block">
+          <span class="stat-num" id="daysNum">0</span>
+          <span class="stat-label">天</span>
+          <p class="stat-desc">共同走过</p>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-block">
+          <span class="stat-num">∞</span>
+          <span class="stat-label"></span>
+          <p class="stat-desc">的爱</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ⑪ 发给爸爸 -->
-  <section id="send-msg" class="section">
-    <p class="sec-label">发 给 爸 爸</p>
-    <div class="send-card">
-      <p class="send-hint">长按复制 · 发给他</p>
-      <p class="send-text" id="sendText"></p>
-      <button class="copy-btn" id="copyBtn" onclick="copyMsg()">
-        <span>📋</span><span id="copyLabel">复制这句话</span>
-      </button>
+  <!-- ④ KEYWORDS -->
+  <section id="keywords-sec" class="sec sec-light">
+    <div class="sec-inner">
+      <p class="eyebrow">我 眼 中 的 你</p>
+      <div class="kw-poem" id="kwPoem"></div>
     </div>
   </section>
 
-  <!-- ⑫ 结尾卡片 -->
-  <div id="closing">
-    <div class="closing-flower">🌸</div>
-    <p class="closing-line1" id="closingLine1">爸，节日快乐</p>
-    <p class="closing-line2" id="closingLine2">你永远是我最重要的人</p>
-  </div>
+  <!-- ⑤ LETTER -->
+  <section id="letter-sec" class="sec sec-warm">
+    <div class="sec-inner">
+      <p class="eyebrow">写 给 你 的 信</p>
+      <div class="letter-card">
+        <div class="letter-wm">父</div>
+        <div id="letterContent"></div>
+        <div class="letter-sig">
+          <p class="sig-name" id="sigName"></p>
+          <p class="sig-date" id="sigDate"></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <p id="footer">用心做的，送给最重要的人</p>
-</div>
+  <!-- ⑥ PHOTOS（premium）-->
+  <section id="photos-sec" class="sec premium-only" style="padding:60px 0 20px">
+    <p class="eyebrow" style="padding:0 28px">我 们 的 记 忆</p>
+    <div class="polaroid-rail" id="polaroidRail"></div>
+  </section>
+
+  <!-- ⑦ TIMELINE（premium）-->
+  <section id="timeline-sec" class="sec sec-alt premium-only">
+    <div class="sec-inner">
+      <p class="eyebrow">时 光 轴</p>
+      <div class="tl-body" id="tlBody"></div>
+    </div>
+  </section>
+
+  <!-- ⑧ RESTORATION（premium）-->
+  <section id="restore-sec" class="sec sec-light premium-only">
+    <div class="sec-inner">
+      <p class="eyebrow">时 光 修 复</p>
+      <p class="sec-desc">把老照片还原成最初的样子 · 左右拖动对比</p>
+      <div class="restore-container" id="restoreContainer">
+        <div class="rs-layer rs-before"><img id="rsBefore" src="" alt="修复前" loading="lazy"></div>
+        <div class="rs-layer rs-after"  id="rsAfter"><img id="rsAfterImg" src="" alt="修复后" loading="lazy"></div>
+        <div class="rs-handle" id="rsHandle">
+          <div class="rs-line"></div>
+          <div class="rs-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C8860A" stroke-width="2.5">
+              <polyline points="9,6 3,12 9,18"/><polyline points="15,6 21,12 15,18"/>
+            </svg>
+          </div>
+          <div class="rs-line"></div>
+        </div>
+        <div class="rs-tags">
+          <span class="rs-tag">从 前</span>
+          <span class="rs-tag">修 复 后</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑨ AUDIO（premium，有 audioUrl 才显示）-->
+  <section id="audio-sec" class="sec sec-warm premium-only">
+    <div class="sec-inner">
+      <p class="eyebrow">亲 口 说 的 话</p>
+      <div class="audio-card">
+        <p class="audio-hint">点击播放，听我亲口说给你听</p>
+        <div class="audio-wave" id="audioWave"></div>
+        <button class="audio-play" id="playBtn" onclick="toggleVoice()">
+          <svg id="playIcon" viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
+        </button>
+        <div class="audio-prog-wrap"><div class="audio-prog-fill" id="progFill"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑩ SEND -->
+  <section id="send-sec" class="sec sec-dark">
+    <div class="sec-inner">
+      <p class="eyebrow eyebrow-light">发 给 爸 爸</p>
+      <div class="wechat-mockup">
+        <div class="wechat-row">
+          <div class="wechat-avatar">👨</div>
+          <div>
+            <p class="wechat-name" id="wechatName">爸爸</p>
+            <div class="wechat-bubble" id="wechatBubble"></div>
+          </div>
+        </div>
+      </div>
+      <button class="send-btn" id="sendBtn" onclick="copyMsg()">
+        <span>📋</span><span id="sendLabel">复制这句话</span>
+      </button>
+      <p class="send-hint-txt">复制后，发给他</p>
+    </div>
+  </section>
+
+  <!-- ⑪ CLOSING -->
+  <section id="closing-sec" class="sec">
+    <div class="sec-inner">
+      <div class="closing-petal">🌸</div>
+      <p class="closing-to" id="closingTo"></p>
+      <p class="closing-msg">你永远是我最重要的人</p>
+      <div class="closing-divider"></div>
+      <p class="closing-from" id="closingFrom"></p>
+      <p class="closing-date" id="closingDate"></p>
+    </div>
+  </section>
+
+</div><!-- /#app -->
 
 <!-- 背景音乐 FAB -->
-<button id="music-fab" onclick="toggleMusic()" style="display:none" title="背景音乐">
+<button id="music-fab" onclick="toggleBgMusic()" style="display:none" title="背景音乐">
   <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
 </button>
 
@@ -384,87 +878,91 @@ body {
 <audio id="voiceAudio"></audio>
 
 <script>
-(function init() {
+/* ─────────── 初始化 ─────────── */
+(function boot() {
   const C = CONFIG;
   const now = new Date().getFullYear();
 
-  // 基础文字
-  document.getElementById('coverName').textContent  = C.fatherName;
-  document.getElementById('coverDate').textContent  = C.date + ' · 父亲节';
-  document.getElementById('quoteText').textContent  = C.openingQuote;
-  document.getElementById('sendText').textContent   = C.sendMessage;
-  document.getElementById('sigChild').textContent   = C.childName + ' 敬上';
-  document.getElementById('sigDate').textContent    = C.date;
-  document.getElementById('closingLine1').textContent = C.fatherName + '，节日快乐';
+  /* 页面标题 */
+  document.title = C.fatherName + '，父亲节快乐';
 
-  // 数字统计
-  const years = now - C.childBirthYear;
-  const days  = Math.round(years * 365.25);
-  countUp('yearsNum', years, 1200);
-  countUp('daysNum',  days,  1800);
+  /* Hero 逐字显现 */
+  revealName(C.fatherName, document.getElementById('heroName'));
 
-  // 关键词
-  const kw = document.getElementById('kwWrap');
+  /* 基础文字 */
+  document.getElementById('heroDate').textContent    = C.date + ' · 父亲节';
+  document.getElementById('quoteText').textContent   = C.openingQuote;
+  document.getElementById('wechatBubble').textContent = C.sendMessage;
+  document.getElementById('wechatName').textContent  = C.fatherName;
+  document.getElementById('sigName').textContent     = C.childName + ' 敬上';
+  document.getElementById('sigDate').textContent     = C.date;
+  document.getElementById('closingTo').textContent   = C.fatherName + '，节日快乐';
+  document.getElementById('closingFrom').textContent = '来自：' + C.childName;
+  document.getElementById('closingDate').textContent = C.date;
+
+  /* 关键词诗歌排列 */
+  const poem = document.getElementById('kwPoem');
   C.keywords.forEach((w, i) => {
-    const t = document.createElement('span');
-    t.className = 'kw-tag';
-    t.textContent = w;
-    t.style.transitionDelay = (i * 0.1) + 's';
-    kw.appendChild(t);
+    const line = document.createElement('div');
+    line.className = 'kw-line';
+    line.innerHTML = `<span class="kw-he">他</span><span class="kw-word" style="transition-delay:${i*.12}s">${w}</span>`;
+    poem.appendChild(line);
   });
 
-  // 信件段落
-  const lb = document.getElementById('letterBody');
+  /* 信件 */
+  const lc = document.getElementById('letterContent');
   ['p1','p2','p3','p4'].forEach(k => {
     if (!C.letter[k]) return;
-    const p = document.createElement('p');
-    p.className = 'letter-p';
-    p.textContent = C.letter[k];
-    lb.appendChild(p);
+    const p = document.createElement('p'); p.className = 'letter-p';
+    p.textContent = C.letter[k]; lc.appendChild(p);
   });
 
-  // premium 专属内容
+  /* 数字统计（初始值，等 IntersectionObserver 触发再滚动） */
+  const years = now - C.childBirthYear;
+  const days  = Math.round(years * 365.25);
+  const statsEl = document.getElementById('stats-sec');
+  statsEl._years = years; statsEl._days = days;
+
+  /* premium 内容 */
   if (C.plan === 'premium') {
     document.querySelectorAll('.premium-only').forEach(el => el.classList.remove('premium-only'));
 
-    // 照片
-    const ps = document.getElementById('photoScroll');
+    /* 照片 */
+    const rail = document.getElementById('polaroidRail');
     (C.photos || []).forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'photo-card';
-      const img = document.createElement('img');
-      img.src = item.url || item; img.alt = '家庭照片'; img.loading = 'lazy';
-      card.appendChild(img);
+      const div = document.createElement('div'); div.className = 'polaroid';
+      const img = document.createElement('img'); img.loading = 'lazy';
+      img.src = item.url || item; img.alt = '家庭照片';
+      div.appendChild(img);
       if (item.caption) {
-        const cap = document.createElement('p');
-        cap.className = 'photo-caption';
-        cap.textContent = item.caption;
-        card.appendChild(cap);
+        const cap = document.createElement('p'); cap.className = 'polaroid-cap';
+        cap.textContent = item.caption; div.appendChild(cap);
       }
-      ps.appendChild(card);
+      rail.appendChild(div);
     });
 
-    // 时间轴
-    const tl = document.getElementById('tlWrap');
+    /* 时间轴 */
+    const tl = document.getElementById('tlBody');
     (C.timeline || []).forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'tl-item';
-      div.innerHTML = `<div class="tl-dot"></div><p class="tl-year">${item.year}</p><p class="tl-text">${item.text}</p>`;
-      tl.appendChild(div);
+      const d = document.createElement('div'); d.className = 'tl-item';
+      d.innerHTML = `<div class="tl-dot"></div><p class="tl-year">${item.year}</p><p class="tl-text">${item.text}</p>`;
+      tl.appendChild(d);
     });
 
-    // 修复对比
-    if (C.restorationBefore) document.getElementById('restoreBefore').src = C.restorationBefore;
-    if (C.restorationAfter)  document.getElementById('restoreAfter').src  = C.restorationAfter;
+    /* 修复对比 */
+    if (C.restorationBefore) document.getElementById('rsBefore').src = C.restorationBefore;
+    if (C.restorationAfter)  document.getElementById('rsAfterImg').src  = C.restorationAfter;
+    initRestoreSlider();
 
-    // 录音
+    /* 录音 */
     if (C.audioUrl) {
       document.getElementById('voiceAudio').src = C.audioUrl;
+      buildWaveform();
     } else {
       document.getElementById('audio-sec').style.display = 'none';
     }
 
-    // 背景音乐
+    /* 背景音乐 */
     if (C.bgMusicUrl) {
       document.getElementById('bgAudio').src = C.bgMusicUrl;
       document.getElementById('music-fab').style.display = 'flex';
@@ -473,99 +971,197 @@ body {
 
   spawnPetals();
   observeSections();
+
+  /* 加载屏淡出 */
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('out');
+  }, 900);
 })();
 
-/* 数字滚动 */
-function countUp(id, target, duration) {
-  const el = document.getElementById(id);
-  const start = performance.now();
-  function frame(now) {
-    const p = Math.min((now - start) / duration, 1);
-    el.textContent = Math.floor(p * target);
-    if (p < 1) requestAnimationFrame(frame);
-    else el.textContent = target;
-  }
-  requestAnimationFrame(frame);
+/* ─────────── Hero 逐字显现 ─────────── */
+function revealName(name, el) {
+  [...name].forEach((ch, i) => {
+    const s = document.createElement('span');
+    s.className = 'hero-char';
+    s.textContent = ch;
+    s.style.animationDelay = (0.9 + i * 0.18) + 's';
+    el.appendChild(s);
+  });
 }
 
-/* 花瓣 */
+/* ─────────── 花瓣 ─────────── */
 function spawnPetals() {
-  const emojis = ['🌸','🌺','🌼','✿','❀'];
+  const icons = ['🌸','🌺','🌼','✿','❀'];
   const c = document.getElementById('petals');
-  for (let i = 0; i < 20; i++) {
-    const p = document.createElement('span');
-    p.className = 'petal';
-    p.textContent = emojis[i % emojis.length];
-    p.style.left             = Math.random() * 100 + 'vw';
-    p.style.fontSize         = (13 + Math.random() * 13) + 'px';
-    p.style.animationDuration = (6 + Math.random() * 8) + 's';
-    p.style.animationDelay   = (Math.random() * 12) + 's';
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('span'); p.className = 'petal';
+    p.textContent = icons[i % icons.length];
+    p.style.left  = Math.random() * 100 + 'vw';
+    p.style.fontSize = (12 + Math.random() * 14) + 'px';
+    p.style.animationDuration = (7 + Math.random() * 9) + 's';
+    p.style.animationDelay   = (Math.random() * 14) + 's';
     c.appendChild(p);
   }
 }
 
-/* 滚动入场 */
+/* ─────────── 滚动观察 ─────────── */
 function observeSections() {
+  let statsTriggered = false;
+
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting) return;
-      e.target.classList.add('vis');
-      e.target.querySelectorAll('.kw-tag').forEach((t, i) =>
-        setTimeout(() => t.classList.add('vis'), i * 80)
-      );
+      const el = e.target;
+
+      el.classList.add('vis');
+
+      /* 关键词逐一出现 */
+      el.querySelectorAll('.kw-word').forEach(w => w.classList.add('vis'));
+
+      /* 数字统计滚动触发 */
+      if (el.id === 'stats-sec' && !statsTriggered) {
+        statsTriggered = true;
+        countUp('yearsNum', el._years || 24, 1400);
+        countUp('daysNum',  el._days  || 8766, 2000);
+      }
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll('.section, #closing').forEach(el => io.observe(el));
+
+  document.querySelectorAll('.sec').forEach(el => io.observe(el));
 }
 
-/* 复制 */
+/* ─────────── 数字滚动 ─────────── */
+function countUp(id, target, dur) {
+  const el = document.getElementById(id);
+  const t0 = performance.now();
+  function tick(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3); // cubic ease out
+    el.textContent = Math.floor(ease * target);
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ─────────── 修复对比滑块 ─────────── */
+function initRestoreSlider() {
+  const container = document.getElementById('restoreContainer');
+  const after     = document.getElementById('rsAfter');
+  const handle    = document.getElementById('rsHandle');
+  let dragging = false;
+
+  function setPos(x) {
+    const rect = container.getBoundingClientRect();
+    let pct = (x - rect.left) / rect.width;
+    pct = Math.max(0.05, Math.min(0.95, pct));
+    const p = (pct * 100).toFixed(1);
+    after.style.clipPath = `inset(0 ${(100 - pct * 100).toFixed(1)}% 0 0)`;
+    handle.style.left = p + '%';
+  }
+
+  /* mouse */
+  handle.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+  window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
+  window.addEventListener('mouseup',   () => { dragging = false; });
+
+  /* touch */
+  handle.addEventListener('touchstart', e => { dragging = true; e.preventDefault(); }, { passive:false });
+  window.addEventListener('touchmove',  e => { if (dragging) setPos(e.touches[0].clientX); }, { passive:true });
+  window.addEventListener('touchend',   () => { dragging = false; });
+
+  /* 自动演示：进入视口时先滑动一次 */
+  const demoIo = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    demoIo.disconnect();
+    let pct = 50, dir = -1;
+    const demo = setInterval(() => {
+      pct += dir * 0.6;
+      if (pct <= 20) dir = 1;
+      if (pct >= 50) { clearInterval(demo); return; }
+      const af = document.getElementById('rsAfter');
+      const hd = document.getElementById('rsHandle');
+      if (af) af.style.clipPath = `inset(0 ${(100 - pct).toFixed(1)}% 0 0)`;
+      if (hd) hd.style.left = pct + '%';
+    }, 16);
+  }, { threshold: 0.5 });
+  demoIo.observe(container);
+}
+
+/* ─────────── 录音波形 ─────────── */
+function buildWaveform() {
+  const wrap = document.getElementById('audioWave');
+  if (!wrap) return;
+  const bars = [4,8,14,20,26,22,16,10,7,12,18,24,20,14,9,6,11,17,23,18,13,8];
+  bars.forEach((h, i) => {
+    const b = document.createElement('div'); b.className = 'wave-bar';
+    b.style.height = h + 'px';
+    b.style.animationDelay = (i * 0.06) + 's';
+    wrap.appendChild(b);
+  });
+}
+
+/* ─────────── 录音播放 ─────────── */
+const voiceEl = document.getElementById('voiceAudio');
+let voicePlaying = false;
+
+voiceEl.ontimeupdate = () => {
+  if (!voiceEl.duration) return;
+  const fill = document.getElementById('progFill');
+  if (fill) fill.style.width = (voiceEl.currentTime / voiceEl.duration * 100) + '%';
+};
+voiceEl.onended = () => {
+  voicePlaying = false;
+  const icon = document.getElementById('playIcon');
+  if (icon) icon.innerHTML = '<polygon points="6,4 20,12 6,20"/>';
+  const fill = document.getElementById('progFill');
+  if (fill) fill.style.width = '0%';
+  const wave = document.querySelectorAll('.wave-bar');
+  wave.forEach(b => b.style.animationPlayState = 'paused');
+};
+
+function toggleVoice() {
+  if (!CONFIG.audioUrl) { alert('暂无录音文件'); return; }
+  const icon  = document.getElementById('playIcon');
+  const waves = document.querySelectorAll('.wave-bar');
+  if (voicePlaying) {
+    voiceEl.pause(); voicePlaying = false;
+    icon.innerHTML = '<polygon points="6,4 20,12 6,20"/>';
+    waves.forEach(b => b.style.animationPlayState = 'paused');
+  } else {
+    voiceEl.play(); voicePlaying = true;
+    icon.innerHTML = '<rect x="5" y="4" width="4" height="16"/><rect x="15" y="4" width="4" height="16"/>';
+    waves.forEach(b => b.style.animationPlayState = 'running');
+  }
+}
+
+/* ─────────── 复制 ─────────── */
 function copyMsg() {
   const text = CONFIG.sendMessage;
-  const btn  = document.getElementById('copyBtn');
-  const lbl  = document.getElementById('copyLabel');
+  const btn  = document.getElementById('sendBtn');
+  const lbl  = document.getElementById('sendLabel');
   const done = () => {
     btn.classList.add('ok'); lbl.textContent = '已复制 ✓';
-    setTimeout(() => { btn.classList.remove('ok'); lbl.textContent = '复制这句话'; }, 2500);
+    setTimeout(() => { btn.classList.remove('ok'); lbl.textContent = '复制这句话'; }, 2800);
   };
-  navigator.clipboard ? navigator.clipboard.writeText(text).then(done).catch(fallback) : fallback();
-  function fallback() {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(done).catch(fb);
+  } else { fb(); }
+  function fb() {
     const ta = document.createElement('textarea');
-    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
     document.body.appendChild(ta); ta.select(); document.execCommand('copy');
     document.body.removeChild(ta); done();
   }
 }
 
-/* 录音 */
-const voice = document.getElementById('voiceAudio');
-let voicePlaying = false;
-voice.ontimeupdate = () => {
-  if (!voice.duration) return;
-  document.getElementById('progFill').style.width = (voice.currentTime / voice.duration * 100) + '%';
-};
-voice.onended = () => {
-  voicePlaying = false;
-  document.getElementById('playIcon').innerHTML = '<polygon points="5,3 19,12 5,21"/>';
-  document.getElementById('progFill').style.width = '0%';
-};
-function toggleAudio() {
-  if (!CONFIG.audioUrl) { alert('暂无录音文件'); return; }
-  if (voicePlaying) {
-    voice.pause(); voicePlaying = false;
-    document.getElementById('playIcon').innerHTML = '<polygon points="5,3 19,12 5,21"/>';
-  } else {
-    voice.play(); voicePlaying = true;
-    document.getElementById('playIcon').innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-  }
-}
-
-/* 背景音乐 */
-const bgAudio = document.getElementById('bgAudio');
-const fab = document.getElementById('music-fab');
-let bgPlaying = false;
-function toggleMusic() {
-  if (bgPlaying) { bgAudio.pause(); bgPlaying = false; fab.classList.remove('spin'); }
-  else bgAudio.play().then(() => { bgPlaying = true; fab.classList.add('spin'); }).catch(()=>{});
+/* ─────────── 背景音乐 ─────────── */
+const bgEl  = document.getElementById('bgAudio');
+const fabEl = document.getElementById('music-fab');
+let bgOn = false;
+function toggleBgMusic() {
+  if (bgOn) { bgEl.pause(); bgOn = false; fabEl.classList.remove('spin'); }
+  else { bgEl.play().then(() => { bgOn = true; fabEl.classList.add('spin'); }).catch(()=>{}); }
 }
 </script>
 </body>
