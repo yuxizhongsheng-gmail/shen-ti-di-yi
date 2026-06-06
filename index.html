@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>爸，父亲节快乐</title>
+
+<script>
+/* ========================================================
+   CONFIG — 改这里就能改整个页面
+   plan: "basic"   → 纯文字版（9.9）
+   plan: "premium" → 完整版（19.9）含照片/录音/修复对比
+======================================================== */
+const CONFIG = {
+  plan: "premium",          // "basic" | "premium"
+
+  /* ── 必填 ── */
+  fatherName:   "爸爸",
+  childName:    "小明",
+  date:         "2026年6月21日",
+  openingQuote: "有些话，我一直藏在心里很多年，今天想说出来。",
+  keywords:     ["沉默", "责任", "撑家", "不善言辞", "山一样"],
+
+  letter: {
+    p1: "小时候我总觉得你是个严肃的人。你很少开口，但家里的每一件事你都记着——电费涨了你知道，我成绩单来了你知道，我鞋子小了你也知道。只是那时我太小，读不懂沉默里藏着多少话。",
+    p2: "后来我离开家去读书，才慢慢明白，你给我的那些东西没有一件是买得到的。是你骑着车送我上学的那条路，是你半夜起来给我盖被子的那只手，是你从来不说「我爱你」，却把所有好的都留给我的那种方式。",
+    p3: "我知道我不是一个经常说谢谢的孩子。有时候我甚至不接你的电话，还嫌你唠叨。但我想让你知道，你做的每一件事，我都记得，一件都没忘。以后我会更常联系你，也会努力成为让你骄傲的人。",
+    p4: "今年父亲节，我没有办法陪在你身边，但我希望你能感受到这几个字：爸，你辛苦了，谢谢你，我很爱你。往后的日子，请你多爱惜自己。",
+  },
+
+  sendMessage: "爸，父亲节快乐。这些年辛苦了，谢谢你。我爱你。",
+
+  /* ── premium 专属 ── */
+  photos: [
+    // 填本地 base64 或网络图片 URL，2-9 张
+    "https://picsum.photos/seed/family1/480/360",
+    "https://picsum.photos/seed/family2/480/360",
+    "https://picsum.photos/seed/family3/480/360",
+    "https://picsum.photos/seed/family4/480/360",
+  ],
+
+  restorationBefore: "https://picsum.photos/seed/old1/400/400",
+  restorationAfter:  "https://picsum.photos/seed/new1/400/400",
+
+  audioUrl:   "",  // 录音文件 URL 或 base64
+  bgMusicUrl: "",  // 背景音乐 URL
+};
+</script>
+
+<style>
+/* ───────────── 全局重置 ───────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:       #FFF8F0;
+  --cream2:      #FFF3E4;
+  --gold:        #C8860A;
+  --gold-light:  #F0B429;
+  --amber:       #E8960A;
+  --brown:       #4A2C0A;
+  --brown-mid:   #7A4A1E;
+  --brown-light: #A06830;
+  --text:        #3D2B1F;
+  --text-muted:  #8B6B4A;
+  --shadow:      rgba(92, 58, 30, 0.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  line-height: 1.85;
+  overflow-x: hidden;
+}
+
+/* ───────────── 花瓣层 ───────────── */
+#petals {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.petal {
+  position: absolute;
+  top: -40px;
+  font-size: 18px;
+  opacity: 0;
+  animation: fallPetal linear infinite;
+  user-select: none;
+}
+
+@keyframes fallPetal {
+  0%   { opacity: 0;   transform: translateY(-40px) rotate(0deg)   translateX(0px); }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.5; }
+  100% { opacity: 0;   transform: translateY(105vh) rotate(540deg) translateX(40px); }
+}
+
+/* ───────────── 容器 ───────────── */
+#app {
+  position: relative;
+  z-index: 1;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+/* ───────────── 封面 ───────────── */
+#cover {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 70px 32px 60px;
+  position: relative;
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFF0DC 100%);
+}
+
+.cover-badge {
+  font-size: 11px;
+  letter-spacing: 7px;
+  color: var(--gold);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.4s forwards;
+}
+
+.cover-name {
+  font-size: clamp(52px, 16vw, 72px);
+  font-weight: 800;
+  color: var(--brown);
+  letter-spacing: 8px;
+  line-height: 1;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.7s forwards;
+}
+
+.cover-subtitle {
+  font-size: 17px;
+  color: var(--brown-mid);
+  margin-top: 20px;
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: fadeUp 1s ease 1s forwards;
+}
+
+.cover-flower {
+  font-size: 40px;
+  margin: 28px 0;
+  opacity: 0;
+  animation: fadeUp 1s ease 1.2s forwards, floatFlower 4s ease-in-out 2.2s infinite;
+}
+
+.cover-date {
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 4px;
+  opacity: 0;
+  animation: fadeUp 1s ease 1.4s forwards;
+}
+
+.cover-scroll {
+  position: absolute;
+  bottom: 32px;
+  left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  opacity: 0;
+  animation: fadeUp 1s ease 2.2s forwards;
+}
+
+.scroll-arrow {
+  width: 18px; height: 18px;
+  border-right: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  transform: rotate(45deg);
+  animation: arrowBounce 1.5s ease infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50%       { transform: rotate(45deg) translateY(5px); }
+}
+
+@keyframes floatFlower {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-10px) rotate(8deg); }
+}
+
+/* ───────────── 通用 section ───────────── */
+.section {
+  padding: 56px 28px;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+.section.vis { opacity: 1; transform: translateY(0); }
+
+.sec-label {
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+/* ───────────── 引言 ───────────── */
+#quote {
+  text-align: center;
+  background: linear-gradient(160deg, #FFF8F0, #FFF0DC);
+  border-top: 1px solid rgba(200, 134, 10, 0.12);
+  border-bottom: 1px solid rgba(200, 134, 10, 0.12);
+}
+
+.quote-mark {
+  font-size: 64px;
+  color: var(--gold-light);
+  opacity: 0.35;
+  font-family: Georgia, serif;
+  line-height: 0.6;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.quote-body {
+  font-size: 20px;
+  color: var(--brown);
+  font-weight: 500;
+  line-height: 1.75;
+}
+
+/* ───────────── 关键词 ───────────── */
+#keywords { text-align: center; }
+
+.kw-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.kw-tag {
+  padding: 8px 20px;
+  border: 1.5px solid rgba(200, 134, 10, 0.45);
+  border-radius: 50px;
+  font-size: 15px;
+  color: var(--brown-mid);
+  background: rgba(240, 180, 41, 0.07);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.kw-tag.vis { opacity: 1; transform: scale(1); }
+
+/* ───────────── 分隔 ───────────── */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 28px; opacity: 0.3;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--amber);
+}
+
+/* ───────────── 信件 ───────────── */
+#letter {
+  background: linear-gradient(160deg, #FFFAF5, #FFF5E8);
+  border-top: 1px solid rgba(200, 134, 10, 0.1);
+  border-bottom: 1px solid rgba(200, 134, 10, 0.1);
+}
+
+.letter-body {
+  background: white;
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 24px var(--shadow);
+}
+
+.letter-p {
+  font-size: 15.5px;
+  color: var(--text);
+  line-height: 2.05;
+  text-indent: 2em;
+  margin-bottom: 20px;
+}
+.letter-p:last-child { margin-bottom: 0; }
+
+/* ───────────── 签名 ───────────── */
+#signature {
+  padding: 32px 28px 48px;
+  text-align: right;
+}
+
+.sig-child {
+  font-size: 20px;
+  color: var(--brown);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.sig-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 1px;
+}
+
+/* ───────────── 照片相册 (premium) ───────────── */
+#photos { padding: 56px 0; }
+
+.photo-scroll {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 4px 28px 12px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+.photo-scroll::-webkit-scrollbar { display: none; }
+
+.photo-card {
+  flex-shrink: 0;
+  width: 220px;
+  height: 165px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px var(--shadow);
+  scroll-snap-align: start;
+  transition: transform 0.25s ease;
+}
+.photo-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ───────────── 修复对比 (premium) ───────────── */
+#restoration { text-align: center; }
+
+.restore-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.restore-card {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px var(--shadow);
+}
+
+.restore-card img {
+  width: 100%; height: 160px;
+  object-fit: cover; display: block;
+}
+
+.restore-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  padding: 8px 0;
+  background: rgba(255, 248, 240, 0.9);
+  text-align: center;
+}
+
+/* ───────────── 录音 (premium) ───────────── */
+#audio-sec { text-align: center; }
+
+.audio-card {
+  background: linear-gradient(135deg, #FFF3E0, #FFE5B4);
+  border-radius: 20px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 24px var(--shadow);
+}
+
+.audio-hint { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+
+.play-btn {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 20px rgba(200, 134, 10, 0.45);
+  transition: transform 0.15s;
+}
+.play-btn:active { transform: scale(0.93); }
+
+.play-btn svg { width: 26px; height: 26px; fill: white; }
+
+.progress-bar-wrap {
+  height: 4px;
+  background: rgba(200, 134, 10, 0.2);
+  border-radius: 2px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+/* ───────────── 发给爸爸 ───────────── */
+#send-msg { text-align: center; }
+
+.send-card {
+  background: white;
+  border: 1.5px solid rgba(200, 134, 10, 0.2);
+  border-radius: 20px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+.send-hint { font-size: 11px; letter-spacing: 3px; color: var(--gold); margin-bottom: 16px; }
+
+.send-text {
+  font-size: 18px;
+  color: var(--brown);
+  line-height: 1.8;
+  margin-bottom: 28px;
+  font-weight: 500;
+}
+
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 15px 36px;
+  background: var(--gold);
+  color: white;
+  border: none; border-radius: 50px;
+  font-size: 16px; font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(200, 134, 10, 0.4);
+  transition: all 0.2s; letter-spacing: 1px;
+}
+.copy-btn:active { transform: scale(0.96); }
+.copy-btn.ok { background: #2D9C5A; box-shadow: 0 4px 18px rgba(45, 156, 90, 0.4); }
+
+/* ───────────── 尾部 ───────────── */
+#footer {
+  text-align: center;
+  padding: 24px 28px 100px;
+  font-size: 12px;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* ───────────── 背景音乐按钮 ───────────── */
+#music-fab {
+  position: fixed;
+  bottom: 28px; right: 18px;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 18px rgba(200, 134, 10, 0.45);
+  z-index: 999;
+  transition: transform 0.3s;
+}
+#music-fab.spin { animation: musicSpin 3s linear infinite; }
+#music-fab svg  { width: 22px; height: 22px; fill: white; }
+
+@keyframes musicSpin {
+  from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+}
+
+/* ───────────── 通用动效 ───────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ───────────── 隐藏 premium 区块（basic 时用）───────────── */
+.premium-only { display: none; }
+</style>
+</head>
+<body>
+
+<!-- 花瓣层 -->
+<div id="petals"></div>
+
+<!-- 主体 -->
+<div id="app">
+
+  <!-- ① 封面 -->
+  <section id="cover">
+    <p class="cover-badge">父亲节礼物</p>
+    <h1 class="cover-name" id="coverName">爸爸</h1>
+    <p class="cover-subtitle" id="coverSub">这份礼物，专属于你</p>
+    <div class="cover-flower">🌸</div>
+    <p class="cover-date" id="coverDate">2026 · 父亲节</p>
+    <div class="cover-scroll">
+      <div class="scroll-arrow"></div>
+      <span>向下翻</span>
+    </div>
+  </section>
+
+  <!-- ② 引言 -->
+  <section id="quote" class="section">
+    <p class="sec-label">写给你的话</p>
+    <span class="quote-mark">"</span>
+    <p class="quote-body" id="quoteText"></p>
+  </section>
+
+  <!-- ③ 关键词 -->
+  <section id="keywords" class="section">
+    <p class="sec-label">我眼中的你</p>
+    <div class="kw-wrap" id="kwWrap"></div>
+  </section>
+
+  <div class="divider">🌼</div>
+
+  <!-- ④ 信 -->
+  <section id="letter" class="section">
+    <p class="sec-label">我想对你说</p>
+    <div class="letter-body" id="letterBody"></div>
+  </section>
+
+  <!-- ⑤ 签名 -->
+  <div id="signature" class="section">
+    <p class="sig-child" id="sigChild"></p>
+    <p class="sig-date"  id="sigDate"></p>
+  </div>
+
+  <!-- ⑥ 照片相册（premium） -->
+  <section id="photos" class="section premium-only">
+    <p class="sec-label" style="padding:0 28px">我们的记忆</p>
+    <div class="photo-scroll" id="photoScroll"></div>
+  </section>
+
+  <!-- ⑦ 旧照修复（premium） -->
+  <section id="restoration" class="section premium-only">
+    <p class="sec-label">时光修复</p>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:4px;">把老照片还原成新的样子</p>
+    <div class="restore-grid">
+      <div class="restore-card">
+        <img id="restoreBefore" src="" alt="修复前">
+        <p class="restore-lbl">从前</p>
+      </div>
+      <div class="restore-card">
+        <img id="restoreAfter" src="" alt="修复后">
+        <p class="restore-lbl">修复后</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑧ 录音（premium） -->
+  <section id="audio-sec" class="section premium-only">
+    <p class="sec-label">亲口说的话</p>
+    <div class="audio-card">
+      <p class="audio-hint">点击播放，听我亲口说给你听</p>
+      <button class="play-btn" id="playBtn" onclick="toggleAudio()">
+        <svg id="playIcon" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      </button>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑨ 复制发送 -->
+  <section id="send-msg" class="section">
+    <p class="sec-label">发给爸爸</p>
+    <div class="send-card">
+      <p class="send-hint">长按复制 · 发给他</p>
+      <p class="send-text" id="sendText"></p>
+      <button class="copy-btn" id="copyBtn" onclick="copyMsg()">
+        <span>📋</span><span id="copyLabel">复制这句话</span>
+      </button>
+    </div>
+  </section>
+
+  <div id="footer">用心做的，送给最重要的人</div>
+</div>
+
+<!-- 背景音乐 FAB（premium） -->
+<button id="music-fab" onclick="toggleMusic()" style="display:none" title="背景音乐">
+  <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+</button>
+
+<audio id="bgAudio" loop></audio>
+<audio id="voiceAudio"></audio>
+
+<script>
+/* ─────────────── 初始化 ─────────────── */
+(function init() {
+  const C = CONFIG;
+
+  // 文字内容填充
+  document.getElementById('coverName').textContent  = C.fatherName;
+  document.getElementById('coverDate').textContent  = C.date + ' · 父亲节';
+  document.getElementById('quoteText').textContent  = C.openingQuote;
+  document.getElementById('sendText').textContent   = C.sendMessage;
+  document.getElementById('sigChild').textContent   = C.childName + ' 敬上';
+  document.getElementById('sigDate').textContent    = C.date;
+
+  // 关键词
+  const kw = document.getElementById('kwWrap');
+  C.keywords.forEach((word, i) => {
+    const tag = document.createElement('span');
+    tag.className = 'kw-tag';
+    tag.textContent = word;
+    tag.style.transitionDelay = (i * 0.1) + 's';
+    kw.appendChild(tag);
+  });
+
+  // 信件
+  const lb = document.getElementById('letterBody');
+  ['p1','p2','p3','p4'].forEach(k => {
+    if (!C.letter[k]) return;
+    const p = document.createElement('p');
+    p.className = 'letter-p';
+    p.textContent = C.letter[k];
+    lb.appendChild(p);
+  });
+
+  // premium 内容
+  if (C.plan === 'premium') {
+    document.querySelectorAll('.premium-only').forEach(el => el.style.display = '');
+
+    // 照片
+    const ps = document.getElementById('photoScroll');
+    (C.photos || []).forEach(src => {
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      const img = document.createElement('img');
+      img.src = src; img.alt = '家庭照片'; img.loading = 'lazy';
+      card.appendChild(img);
+      ps.appendChild(card);
+    });
+
+    // 修复对比
+    if (C.restorationBefore) document.getElementById('restoreBefore').src = C.restorationBefore;
+    if (C.restorationAfter)  document.getElementById('restoreAfter').src  = C.restorationAfter;
+
+    // 录音
+    if (C.audioUrl) {
+      document.getElementById('voiceAudio').src = C.audioUrl;
+    } else {
+      document.getElementById('audio-sec').style.display = 'none';
+    }
+
+    // 背景音乐
+    if (C.bgMusicUrl) {
+      document.getElementById('bgAudio').src = C.bgMusicUrl;
+      document.getElementById('music-fab').style.display = 'flex';
+    }
+  }
+
+  // 花瓣
+  spawnPetals();
+
+  // 滚动入场
+  observeSections();
+})();
+
+/* ─────────────── 花瓣 ─────────────── */
+function spawnPetals() {
+  const emojis = ['🌸','🌺','🌼','✿','❀'];
+  const container = document.getElementById('petals');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('span');
+    p.className = 'petal';
+    p.textContent = emojis[i % emojis.length];
+    p.style.left          = Math.random() * 100 + 'vw';
+    p.style.fontSize      = (14 + Math.random() * 12) + 'px';
+    p.style.animationDuration  = (6 + Math.random() * 8) + 's';
+    p.style.animationDelay     = (Math.random() * 10) + 's';
+    container.appendChild(p);
+  }
+}
+
+/* ─────────────── 滚动入场 ─────────────── */
+function observeSections() {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+        // 关键词子项
+        e.target.querySelectorAll('.kw-tag').forEach((tag, i) => {
+          setTimeout(() => tag.classList.add('vis'), i * 80);
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.section').forEach(el => io.observe(el));
+}
+
+/* ─────────────── 复制 ─────────────── */
+function copyMsg() {
+  const text = CONFIG.sendMessage;
+  const btn = document.getElementById('copyBtn');
+  const lbl = document.getElementById('copyLabel');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('ok');
+    lbl.textContent = '已复制 ✓';
+    setTimeout(() => { btn.classList.remove('ok'); lbl.textContent = '复制这句话'; }, 2500);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.classList.add('ok');
+    lbl.textContent = '已复制 ✓';
+    setTimeout(() => { btn.classList.remove('ok'); lbl.textContent = '复制这句话'; }, 2500);
+  });
+}
+
+/* ─────────────── 录音播放 ─────────────── */
+const voice = document.getElementById('voiceAudio');
+let voicePlaying = false;
+
+voice.ontimeupdate = () => {
+  if (!voice.duration) return;
+  const pct = (voice.currentTime / voice.duration) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+};
+
+voice.onended = () => {
+  voicePlaying = false;
+  document.getElementById('playIcon').setAttribute('points','5,3 19,12 5,21');
+  document.getElementById('progressFill').style.width = '0%';
+};
+
+function toggleAudio() {
+  if (!CONFIG.audioUrl) {
+    alert('暂无录音文件');
+    return;
+  }
+  if (voicePlaying) {
+    voice.pause(); voicePlaying = false;
+    document.getElementById('playIcon').setAttribute('points','5,3 19,12 5,21');
+  } else {
+    voice.play(); voicePlaying = true;
+    // 改成暂停图标 ⏸
+    document.getElementById('playIcon').innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+  }
+}
+
+/* ─────────────── 背景音乐 ─────────────── */
+const bgAudio = document.getElementById('bgAudio');
+const fab = document.getElementById('music-fab');
+let bgPlaying = false;
+
+function toggleMusic() {
+  if (bgPlaying) {
+    bgAudio.pause(); bgPlaying = false;
+    fab.classList.remove('spin');
+  } else {
+    bgAudio.play().then(() => {
+      bgPlaying = true;
+      fab.classList.add('spin');
+    }).catch(() => {});
+  }
+}
+</script>
+</body>
+</html>
