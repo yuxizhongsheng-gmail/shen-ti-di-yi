@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no, email=no">
+<title>父亲节限定 · 写给爸爸的专属礼物</title>
+
+<meta name="description" content="一份只为你和爸爸定制的父亲节网页礼物。把说不出口的话，做成一份惊喜。">
+<meta property="og:title" content="父亲节限定 · 写给爸爸的专属礼物">
+<meta property="og:description" content="把说不出口的话，做成一份只属于他的礼物。">
+<meta property="og:image" content="https://picsum.photos/seed/fatherday-shop/600/400">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<script>
+/* ================================================================
+   SHOP — 店铺信息，发布前改这里
+================================================================ */
+const SHOP = {
+  demoUrl:  "index.html",            // 示例网页地址
+  priceBasic:   9.9,
+  pricePremium: 19.9,
+
+  qrImage: "",                       // 收款 / 客服二维码图片地址，留空则显示占位
+  contactHint: "长按识别二维码，添加客服微信下单",
+
+  deadline: "2026-06-21T23:59:59+08:00", // 父亲节倒计时
+  ctaUrl:   "#contact",
+};
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:   #0C0701; --ink-m: #1C0E04; --ink-l: #2A1808;
+  --gold:  #C8860A; --gold-w:#E8A020; --gold-s:#F2BE50; --gold-glow: rgba(232,160,32,.22);
+  --cream: #FDFAF5; --cream2:#FFF7EC; --paper: #FEFCF8;
+  --t-dark:#1A0E04; --t-mid: #5C3A18; --t-soft: #8A6038; --t-muted:#B09070;
+  --sh-s: 0 2px 12px rgba(20,10,3,.07);
+  --sh-m: 0 4px 28px rgba(20,10,3,.11);
+  --sh-l: 0 10px 56px rgba(20,10,3,.16);
+  --serif: "Noto Serif SC", "Songti SC", "Noto Serif CJK SC", "STSong", "SimSun", Georgia, serif;
+  --sans:  -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--ink); color: var(--t-dark); font-family: var(--sans); line-height: 1.85; overflow-x: hidden; }
+
+#app { max-width: 430px; margin: 0 auto; }
+
+.sec {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+}
+.sec.vis { opacity:1; transform:translateY(0); }
+
+.sec-inner { padding: 64px 28px; }
+.sec-light { background: var(--cream); }
+.sec-warm  { background: var(--cream2); }
+.sec-alt   { background: var(--paper); }
+.sec-dark  { background: var(--ink); }
+
+.eyebrow {
+  font-family: var(--sans); font-size: 10.5px; letter-spacing: 5px;
+  color: var(--gold); text-align: center; margin-bottom: 20px;
+}
+.eyebrow-light { color: rgba(232,160,32,.7); }
+.sec-title {
+  font-family: var(--serif); font-size: 24px; font-weight: 900;
+  color: var(--t-dark); text-align: center; letter-spacing: 4px;
+  margin-bottom: 36px;
+}
+.sec-title-light { color: var(--gold-w); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes lineIn { to { opacity:1; transform:translateY(0); } }
+
+/* ════════════════════════════════════
+   ① HERO
+════════════════════════════════════ */
+#hero {
+  min-height: 100svh;
+  background: radial-gradient(ellipse at 50% 32%, var(--ink-l) 0%, var(--ink) 72%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 90px 32px 70px; position: relative;
+}
+.hero-eye {
+  font-family: var(--sans); font-size: 10px; letter-spacing: 8px;
+  color: rgba(232,160,32,.55); margin-bottom: 32px;
+  animation: fadeUp .8s ease .2s both;
+}
+.hero-headline {
+  font-family: var(--serif); font-weight: 900; color: var(--gold-w);
+  font-size: clamp(32px, 9.5vw, 44px); line-height: 1.55; letter-spacing: 3px;
+  text-shadow: 0 0 80px var(--gold-glow);
+}
+.hero-line {
+  display: block; opacity: 0; transform: translateY(28px);
+  animation: lineIn .9s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-line:nth-child(1) { animation-delay: .4s; }
+.hero-line:nth-child(2) { animation-delay: .65s; }
+.hero-line:nth-child(3) { animation-delay: .9s; }
+.hero-line:nth-child(4) { animation-delay: 1.15s; color: var(--gold-s); }
+
+.hero-sub {
+  font-family: var(--serif); font-size: 14px; letter-spacing: 3px;
+  color: rgba(255,240,200,.45); margin-top: 28px;
+  animation: fadeUp .8s ease 1.5s both;
+}
+
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-top: 44px; padding: 16px 38px;
+  background: transparent; color: var(--gold-w);
+  border: 1px solid rgba(232,160,32,.4); border-radius: 50px;
+  font-size: 14px; font-family: var(--sans); letter-spacing: 3px;
+  text-decoration: none;
+  animation: fadeUp .8s ease 1.9s both;
+  transition: background .2s, color .2s;
+}
+.hero-cta:active { background: rgba(232,160,32,.12); }
+
+.hero-scroll {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  animation: fadeUp .8s ease 2.3s both;
+}
+.scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(180deg, transparent, rgba(232,160,32,.5));
+  animation: scrollLine 2s ease-in-out infinite;
+}
+@keyframes scrollLine { 0%,100%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} }
+.scroll-txt { font-size: 10px; letter-spacing: 3px; color: rgba(232,160,32,.35); }
+
+/* ════════════════════════════════════
+   ② INSIGHT — 一句共鸣
+════════════════════════════════════ */
+.insight-quote {
+  font-family: var(--serif); font-size: 21px; line-height: 1.9;
+  color: var(--t-dark); text-align: center; position: relative;
+  margin-bottom: 28px;
+}
+.insight-quote::before {
+  content: '\201C'; font-family: Georgia, serif; font-size: 70px;
+  color: var(--gold-s); opacity: .18; position: absolute;
+  top: -16px; left: -8px; line-height: 1;
+}
+.insight-body {
+  font-size: 14.5px; color: var(--t-mid); line-height: 2.1;
+  text-indent: 2em;
+}
+
+/* ════════════════════════════════════
+   ③ FEATURES — 礼物里有什么
+════════════════════════════════════ */
+.feature-list { display: flex; flex-direction: column; gap: 14px; }
+.feature-card {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: var(--paper); border-radius: 16px; padding: 18px 18px;
+  box-shadow: var(--sh-s);
+  position: relative;
+}
+.feature-icon {
+  font-size: 26px; flex-shrink: 0; width: 40px; text-align: center;
+  line-height: 1.4;
+}
+.feature-name {
+  font-family: var(--serif); font-size: 15.5px; font-weight: 700;
+  color: var(--t-dark); letter-spacing: 1px; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.feature-desc { font-size: 12.5px; color: var(--t-soft); line-height: 1.7; }
+.feature-tag {
+  font-size: 9px; letter-spacing: 2px; font-weight: 700;
+  color: var(--gold); border: 1px solid rgba(200,134,10,.35);
+  border-radius: 20px; padding: 2px 8px;
+}
+
+/* ════════════════════════════════════
+   ④ PRICING
+════════════════════════════════════ */
+.price-cards { display: flex; flex-direction: column; gap: 20px; }
+.price-card {
+  background: var(--cream); border-radius: 20px; padding: 28px 24px;
+  box-shadow: var(--sh-m); position: relative; border: 1px solid rgba(200,134,10,.1);
+}
+.price-card.featured {
+  background: linear-gradient(160deg, var(--ink-m), var(--ink));
+  box-shadow: var(--sh-l), 0 0 0 1px rgba(232,160,32,.25);
+}
+.price-badge {
+  position: absolute; top: -12px; right: 24px;
+  background: var(--gold-w); color: var(--ink);
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  padding: 5px 14px; border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(232,160,32,.4);
+}
+.price-name {
+  font-family: var(--serif); font-size: 17px; font-weight: 700;
+  letter-spacing: 3px; margin-bottom: 6px; color: var(--t-dark);
+}
+.price-card.featured .price-name { color: var(--gold-w); }
+.price-tagline { font-size: 12.5px; color: var(--t-soft); margin-bottom: 18px; }
+.price-card.featured .price-tagline { color: rgba(255,240,200,.45); }
+.price-num {
+  font-family: var(--serif); font-size: 36px; font-weight: 900;
+  color: var(--t-dark); margin-bottom: 18px;
+}
+.price-card.featured .price-num { color: var(--gold-s); }
+.price-num span { font-size: 15px; font-weight: 400; color: var(--t-muted); }
+.price-card.featured .price-num span { color: rgba(255,240,200,.3); }
+
+.price-feature {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; color: var(--t-mid); line-height: 1.8; margin-bottom: 8px;
+}
+.price-card.featured .price-feature { color: rgba(255,240,200,.7); }
+.price-feature::before { content: '✓'; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+.price-feature.dim { color: var(--t-muted); }
+.price-feature.dim::before { color: var(--t-muted); content: '·'; }
+
+/* ════════════════════════════════════
+   ⑤ STEPS
+════════════════════════════════════ */
+.step-list { display: flex; flex-direction: column; gap: 28px; }
+.step-item { display: flex; gap: 18px; align-items: flex-start; }
+.step-num {
+  font-family: var(--serif); font-size: 22px; font-weight: 900;
+  color: var(--gold); flex-shrink: 0; width: 36px;
+  border: 1px solid rgba(200,134,10,.3); border-radius: 50%;
+  height: 36px; display: flex; align-items: center; justify-content: center;
+}
+.step-title {
+  font-family: var(--serif); font-size: 16px; font-weight: 700;
+  color: var(--t-dark); margin-bottom: 4px; letter-spacing: 1px;
+}
+.step-desc { font-size: 13px; color: var(--t-soft); line-height: 1.8; }
+
+/* ════════════════════════════════════
+   ⑥ DEMO CTA + COUNTDOWN
+════════════════════════════════════ */
+#demo-sec {
+  background: radial-gradient(ellipse at 50% 0%, var(--ink-l) 0%, var(--ink) 60%);
+}
+.demo-headline {
+  font-family: var(--serif); font-size: 22px; font-weight: 900;
+  color: var(--gold-w); text-align: center; line-height: 1.7;
+  letter-spacing: 2px; margin-bottom: 32px;
+}
+.demo-cta {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 18px;
+  background: linear-gradient(135deg, var(--gold-s), var(--gold-w));
+  color: var(--ink); border: none; border-radius: 50px;
+  font-size: 16px; font-family: var(--sans); font-weight: 700; letter-spacing: 2px;
+  text-decoration: none; box-shadow: 0 8px 30px rgba(232,160,32,.35);
+  margin-bottom: 36px; transition: transform .15s;
+}
+.demo-cta:active { transform: scale(.97); }
+
+.cd-label-row { text-align: center; font-size: 12px; letter-spacing: 3px; color: rgba(232,160,32,.45); margin-bottom: 14px; }
+.countdown { display: flex; justify-content: center; align-items: flex-start; gap: 10px; }
+.cd-block { text-align: center; }
+.cd-num {
+  font-family: var(--serif); font-size: 24px; font-weight: 900;
+  color: var(--gold-w); background: rgba(232,160,32,.08);
+  border: 1px solid rgba(232,160,32,.18); border-radius: 8px;
+  padding: 8px 4px; min-width: 46px; display: block;
+}
+.cd-unit { font-size: 10px; color: rgba(232,160,32,.4); letter-spacing: 2px; margin-top: 6px; }
+.cd-colon { font-family: var(--serif); font-size: 24px; color: rgba(232,160,32,.3); padding-top: 6px; }
+
+/* ════════════════════════════════════
+   ⑦ FAQ
+════════════════════════════════════ */
+.faq-item {
+  background: var(--paper); border-radius: 14px;
+  margin-bottom: 12px; box-shadow: var(--sh-s); overflow: hidden;
+}
+.faq-item:last-child { margin-bottom: 0; }
+.faq-item summary {
+  list-style: none; cursor: pointer;
+  padding: 18px 20px; font-size: 14.5px; font-weight: 700;
+  color: var(--t-dark); display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; font-family: var(--serif);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: '+'; font-size: 20px; color: var(--gold);
+  font-family: var(--sans); flex-shrink: 0; transition: transform .25s;
+  font-weight: 400; line-height: 1;
+}
+.faq-item[open] summary::after { transform: rotate(45deg); }
+.faq-body {
+  padding: 0 20px 18px; font-size: 13px; color: var(--t-soft); line-height: 1.9;
+}
+
+/* ════════════════════════════════════
+   ⑧ FINAL CTA
+════════════════════════════════════ */
+#final-sec {
+  background: radial-gradient(ellipse at 50% 60%, var(--ink-l) 0%, var(--ink) 70%);
+}
+#final-sec .sec-inner { padding: 80px 32px 60px; text-align: center; }
+.final-petal { font-size: 36px; margin-bottom: 24px; animation: floatPetal 4s ease-in-out infinite; }
+@keyframes floatPetal { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-10px) rotate(10deg)} }
+.final-headline {
+  font-family: var(--serif); font-size: 26px; font-weight: 900;
+  color: var(--gold-w); letter-spacing: 4px; line-height: 1.7;
+  margin-bottom: 12px;
+}
+.final-sub {
+  font-family: var(--serif); font-size: 13px; color: rgba(255,240,200,.45);
+  letter-spacing: 2px; margin-bottom: 36px;
+}
+.final-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 18px 44px;
+  background: linear-gradient(135deg, var(--gold-s), var(--gold-w));
+  color: var(--ink); border: none; border-radius: 50px;
+  font-size: 16px; font-family: var(--sans); font-weight: 700; letter-spacing: 2px;
+  text-decoration: none; box-shadow: 0 8px 30px rgba(232,160,32,.35);
+  margin-bottom: 28px;
+}
+
+.qr-frame {
+  width: 150px; height: 150px; margin: 0 auto 14px;
+  background: white; border-radius: 16px; padding: 10px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--sh-m);
+}
+.qr-frame img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; }
+.qr-placeholder {
+  width: 100%; height: 100%; border-radius: 6px;
+  background: var(--cream2); display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--t-muted); text-align: center; padding: 10px;
+  font-family: var(--sans); line-height: 1.6;
+}
+.qr-hint { font-size: 12px; color: rgba(232,160,32,.4); letter-spacing: 2px; margin-bottom: 50px; }
+
+.final-foot {
+  font-size: 11px; color: rgba(232,160,32,.25); letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ① HERO -->
+  <section id="hero">
+    <p class="hero-eye">父 亲 节 · 2 0 2 6</p>
+    <h1 class="hero-headline">
+      <span class="hero-line">有些话</span>
+      <span class="hero-line">你说不出口</span>
+      <span class="hero-line">那就让一份礼物</span>
+      <span class="hero-line">替你说</span>
+    </h1>
+    <p class="hero-sub">为爸爸定制的 · 父亲节专属网页</p>
+    <a class="hero-cta" href="#insight-sec">了 解 一 下 ↓</a>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <p class="scroll-txt">向 下 翻 阅</p>
+    </div>
+  </section>
+
+  <!-- ② INSIGHT -->
+  <section id="insight-sec" class="sec sec-light">
+    <div class="sec-inner">
+      <p class="eyebrow">写 在 前 面</p>
+      <p class="insight-quote">中国家庭最深的爱，常常是说不出口的那种。</p>
+      <p class="insight-body">你一定记得：他陪你写作业到深夜的样子，他骑车送你上学的背影，他在电话里说"我挺好的，你别担心"的语气。这些话，你想说一句"谢谢"，却总也说不出口——那就用一份礼物，替你说。</p>
+    </div>
+  </section>
+
+  <!-- ③ FEATURES -->
+  <section id="features-sec" class="sec sec-alt">
+    <div class="sec-inner">
+      <p class="eyebrow">礼 物 里 有 什 么</p>
+      <p class="sec-title">九 个 瞬 间<br>一 份 心 意</p>
+      <div class="feature-list">
+        <div class="feature-card">
+          <div class="feature-icon">🎬</div>
+          <div>
+            <p class="feature-name">专属开场</p>
+            <p class="feature-desc">爸爸的名字，一字一字浮现登场</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💌</div>
+          <div>
+            <p class="feature-name">写给爸爸的信</p>
+            <p class="feature-desc">把心里话，排成一封信的样子</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📜</div>
+          <div>
+            <p class="feature-name">关键词诗</p>
+            <p class="feature-desc">几个词，画出你眼中的他</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📷</div>
+          <div>
+            <p class="feature-name">回忆相册 <span class="feature-tag">臻享版</span></p>
+            <p class="feature-desc">把老照片，放进时光长廊</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🕰️</div>
+          <div>
+            <p class="feature-name">时光轴 <span class="feature-tag">臻享版</span></p>
+            <p class="feature-desc">从出生到今天，一条线说完</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🖼️</div>
+          <div>
+            <p class="feature-name">老照片修复 <span class="feature-tag">臻享版</span></p>
+            <p class="feature-desc">拖动滑块，旧时光重新清晰</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎙️</div>
+          <div>
+            <p class="feature-name">亲口告白 <span class="feature-tag">臻享版</span></p>
+            <p class="feature-desc">录一段话，让爸爸听见你的声音</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🍶</div>
+          <div>
+            <p class="feature-name">父亲节好礼 <span class="feature-tag">臻享版</span></p>
+            <p class="feature-desc">一杯酒，把心意做成实物</p>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📲</div>
+          <div>
+            <p class="feature-name">一键发送</p>
+            <p class="feature-desc">生成专属文案，复制即可发给爸爸</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ PRICING -->
+  <section id="pricing-sec" class="sec sec-light">
+    <div class="sec-inner">
+      <p class="eyebrow">选 择 你 的 心 意</p>
+      <p class="sec-title">一 份 心 意<br>两 种 表 达</p>
+      <div class="price-cards">
+        <div class="price-card">
+          <p class="price-name">基 础 版</p>
+          <p class="price-tagline">把心里话，好好说出来</p>
+          <p class="price-num" id="priceBasic">¥0<span>&nbsp;/ 份</span></p>
+          <div class="price-feature">专属开场动画</div>
+          <div class="price-feature">写给爸爸的信</div>
+          <div class="price-feature">关键词诗</div>
+          <div class="price-feature">一键发送给爸爸</div>
+          <div class="price-feature dim">回忆相册 / 时光轴</div>
+          <div class="price-feature dim">老照片修复 / 亲口告白</div>
+          <div class="price-feature dim">父亲节好礼（酒）</div>
+        </div>
+        <div class="price-card featured">
+          <span class="price-badge">推 荐</span>
+          <p class="price-name">臻 享 版</p>
+          <p class="price-tagline">再加上回忆、声音与一份实物好礼</p>
+          <p class="price-num" id="pricePremium">¥0<span>&nbsp;/ 份</span></p>
+          <div class="price-feature">基础版全部内容</div>
+          <div class="price-feature">回忆相册</div>
+          <div class="price-feature">时光轴</div>
+          <div class="price-feature">老照片修复对比</div>
+          <div class="price-feature">亲口告白录音</div>
+          <div class="price-feature">父亲节好礼（酒）展示与优惠</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ STEPS -->
+  <section id="steps-sec" class="sec sec-alt">
+    <div class="sec-inner">
+      <p class="eyebrow">三 步 拥 有</p>
+      <p class="sec-title">从 心 意<br>到 惊 喜</p>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div>
+            <p class="step-title">留下你的故事</p>
+            <p class="step-desc">告诉我们爸爸的名字、你们之间的回忆，以及那句你一直没说出口的话。</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div>
+            <p class="step-title">连夜为你定制</p>
+            <p class="step-desc">24 小时内，我们把这些内容做成一个独一无二的专属网页。</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div>
+            <p class="step-title">发给爸爸</p>
+            <p class="step-desc">一条微信链接，点开就是属于他的惊喜。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑥ DEMO CTA -->
+  <section id="demo-sec" class="sec sec-dark">
+    <div class="sec-inner">
+      <p class="eyebrow eyebrow-light">先 睹 为 快</p>
+      <p class="demo-headline">想知道，<br>打开是什么感觉？</p>
+      <a class="demo-cta" id="demoBtn" href="#" target="_blank" rel="noopener">查 看 示 例 →</a>
+      <p class="cd-label-row">距离今年父亲节还有</p>
+      <div class="countdown" id="countdown"></div>
+    </div>
+  </section>
+
+  <!-- ⑦ FAQ -->
+  <section id="faq-sec" class="sec sec-light">
+    <div class="sec-inner">
+      <p class="eyebrow">常 见 问 题</p>
+      <p class="sec-title">还 有 疑 问？</p>
+      <details class="faq-item" open>
+        <summary>爸爸不太会用智能手机，能看懂吗？</summary>
+        <div class="faq-body">能。这是一个网页链接，在微信里直接打开即可，不需要下载任何 App，也不需要注册。点开就能看，跟看朋友圈一样简单。</div>
+      </details>
+      <details class="faq-item">
+        <summary>可以放真实的照片和我自己写的文字吗？</summary>
+        <div class="faq-body">当然可以，而且非常推荐。整份礼物会按你提供的照片、故事和心里话来定制，越真实，越打动人。</div>
+      </details>
+      <details class="faq-item">
+        <summary>下单后多久可以拿到？</summary>
+        <div class="faq-body">提交资料后，24 小时内交付专属链接。父亲节前建议提前 1-2 天下单，预留时间检查内容。</div>
+      </details>
+      <details class="faq-item">
+        <summary>收到后还能修改吗？</summary>
+        <div class="faq-body">可以。交付后支持一次免费修改，比如调整文字、替换照片等。</div>
+      </details>
+      <details class="faq-item">
+        <summary>父亲节好礼里的"酒"是什么？需要额外付费吗？</summary>
+        <div class="faq-body">臻享版网页中会有一个专属的酒类好礼展示区，附带优惠购买方式——是否购买完全由你决定，不会自动下单或扣费。</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ⑧ FINAL CTA -->
+  <section id="final-sec" class="sec">
+    <div class="sec-inner">
+      <div class="final-petal">🌸</div>
+      <p class="final-headline">今年，<br>换一种方式说爱他</p>
+      <p class="final-sub">F A T H E R ' S   D A Y   2 0 2 6</p>
+      <a class="final-cta" id="finalBtn" href="#contact">立 即 定 制 →</a>
+      <div id="contact">
+        <div class="qr-frame" id="qrFrame">
+          <div class="qr-placeholder">在此放置<br>客服 / 收款二维码</div>
+        </div>
+        <p class="qr-hint" id="contactHint"></p>
+      </div>
+      <p class="final-foot">© 2026 · 一份用心做的父亲节礼物</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  /* 价格 */
+  document.getElementById('priceBasic').innerHTML   = '¥' + SHOP.priceBasic   + '<span>&nbsp;/ 份</span>';
+  document.getElementById('pricePremium').innerHTML = '¥' + SHOP.pricePremium + '<span>&nbsp;/ 份</span>';
+
+  /* 示例 / 联系方式 */
+  document.getElementById('demoBtn').href  = SHOP.demoUrl;
+  document.getElementById('finalBtn').href = SHOP.ctaUrl;
+  document.getElementById('contactHint').textContent = SHOP.contactHint;
+
+  if (SHOP.qrImage) {
+    const frame = document.getElementById('qrFrame');
+    frame.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = SHOP.qrImage; img.alt = '联系二维码';
+    frame.appendChild(img);
+  }
+
+  /* 滚动揭示 */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.sec').forEach(el => io.observe(el));
+
+  /* 倒计时 */
+  startCountdown(SHOP.deadline);
+})();
+
+function startCountdown(deadline) {
+  const target = new Date(deadline).getTime();
+  const wrap = document.getElementById('countdown');
+  const units = [
+    { key: 'd', label: '天' },
+    { key: 'h', label: '时' },
+    { key: 'm', label: '分' },
+    { key: 's', label: '秒' },
+  ];
+  units.forEach((u, i) => {
+    if (i > 0) {
+      const colon = document.createElement('span');
+      colon.className = 'cd-colon'; colon.textContent = ':';
+      wrap.appendChild(colon);
+    }
+    const block = document.createElement('div'); block.className = 'cd-block';
+    block.innerHTML = `<span class="cd-num" id="lcd-${u.key}">00</span><span class="cd-unit">${u.label}</span>`;
+    wrap.appendChild(block);
+  });
+
+  function tick() {
+    const diff = Math.max(0, target - Date.now());
+    document.getElementById('lcd-d').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+    document.getElementById('lcd-h').textContent = String(Math.floor(diff % 86400000 / 3600000)).padStart(2, '0');
+    document.getElementById('lcd-m').textContent = String(Math.floor(diff % 3600000 / 60000)).padStart(2, '0');
+    document.getElementById('lcd-s').textContent = String(Math.floor(diff % 60000 / 1000)).padStart(2, '0');
+    if (diff <= 0) clearInterval(timer);
+  }
+  tick();
+  const timer = setInterval(tick, 1000);
+}
+</script>
+</body>
+</html>

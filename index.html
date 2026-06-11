@@ -3,9 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no, email=no">
 <title>爸，父亲节快乐</title>
 
-<!-- Noto Serif SC — 给中文情感文字最好的衬线字体 -->
+<!-- 微信 / 社交分享预览卡片（每次交付时按该订单的 CONFIG 手动替换以下三项）-->
+<meta name="description" content="一份只属于他的父亲节礼物——写给爸爸的信、家庭回忆与心意，点开即是惊喜。">
+<meta property="og:title" content="爸，父亲节快乐">
+<meta property="og:description" content="一份只属于他的父亲节礼物，点开看看吧。">
+<meta property="og:image" content="https://picsum.photos/seed/fatherday-share/600/400">
+
+<!-- 浏览器标签页图标 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E">
+
+<!-- Noto Serif SC — 给中文情感文字最好的衬线字体（CDN 不可用时自动回退到系统衬线字体）-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -119,7 +129,7 @@ const CONFIG = {
   --sh-m: 0 4px 28px rgba(20,10,3,.11);
   --sh-l: 0 10px 56px rgba(20,10,3,.16);
 
-  --serif: "Noto Serif SC", "STSong", "SimSun", Georgia, serif;
+  --serif: "Noto Serif SC", "Songti SC", "Noto Serif CJK SC", "STSong", "SimSun", Georgia, serif;
   --sans:  -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
@@ -1081,7 +1091,7 @@ body {
     (C.photos || []).forEach(item => {
       const div = document.createElement('div'); div.className = 'polaroid';
       const img = document.createElement('img'); img.loading = 'lazy';
-      img.src = item.url || item; img.alt = '家庭照片';
+      img.alt = '家庭照片'; setImg(img, item.url || item, '家庭照片');
       div.appendChild(img);
       if (item.caption) {
         const cap = document.createElement('p'); cap.className = 'polaroid-cap';
@@ -1099,8 +1109,8 @@ body {
     });
 
     /* 修复对比 */
-    if (C.restorationBefore) document.getElementById('rsBefore').src = C.restorationBefore;
-    if (C.restorationAfter)  document.getElementById('rsAfterImg').src  = C.restorationAfter;
+    setImg(document.getElementById('rsBefore'),   C.restorationBefore, '修复前照片');
+    setImg(document.getElementById('rsAfterImg'), C.restorationAfter,  '修复后照片');
     initRestoreSlider();
 
     /* 录音 */
@@ -1129,6 +1139,19 @@ body {
     document.getElementById('loader').classList.add('out');
   }, 900);
 })();
+
+/* ─────────── 图片安全加载（链接失效时显示占位图，不留白）─────────── */
+function setImg(el, src, label) {
+  if (!el) return;
+  const fallback = 'data:image/svg+xml,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480">` +
+    `<rect width="100%" height="100%" fill="#FFF3E0"/>` +
+    `<text x="50%" y="50%" font-family="sans-serif" font-size="22" fill="#C8860A" text-anchor="middle" dy=".35em">${label || '请替换图片'}</text>` +
+    `</svg>`
+  );
+  el.onerror = () => { el.onerror = null; el.src = fallback; };
+  el.src = src || fallback;
+}
 
 /* ─────────── Hero 逐字显现 ─────────── */
 function revealName(name, el) {
@@ -1256,7 +1279,7 @@ function buildWaveform() {
 /* ─────────── 产品区（一杯酒） ─────────── */
 function initProduct(p) {
   document.getElementById('productTagline').textContent = p.tagline || '';
-  document.getElementById('productImg').src   = p.image || '';
+  setImg(document.getElementById('productImg'), p.image, '产品展示图');
   document.getElementById('productBadge').textContent = p.badge || '父亲节限定';
   document.getElementById('productName').textContent  = p.name || '';
   document.getElementById('productBrand').textContent = p.brand || '';
