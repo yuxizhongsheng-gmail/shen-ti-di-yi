@@ -58,6 +58,32 @@ const CONFIG = {
 
   audioUrl:   "",
   bgMusicUrl: "",
+
+  /* ── 父亲节礼物：一杯酒（premium 专属）── */
+  product: {
+    badge:    "父 亲 节 限 定",
+    name:     "父 愛 · 珍 藏",
+    brand:    "53° 酱香纯粮 · 三年窖藏",
+    tagline:  "中国父子之间，说不出的话，一杯酒就够了。",
+    image:    "https://picsum.photos/seed/fatherwine/600/800",
+
+    features: [
+      "酒标可定制：刻上爸爸的名字与你的祝福",
+      "礼盒附赠手写信卡，与这份网页一同送达",
+      "53°酱香纯粮，三年窖藏，口感绵柔不上头",
+      "顺丰包邮，父亲节前必达",
+      "每日限量发出，售完即止",
+    ],
+
+    price:         199,
+    originalPrice: 399,
+
+    stock:    37,
+    deadline: "2026-06-21T23:59:59+08:00",
+
+    ctaText: "为爸爸订一瓶",
+    ctaUrl:  "#",
+  },
 };
 </script>
 
@@ -585,7 +611,106 @@ body {
 .audio-prog-fill { height: 100%; background: var(--gold); border-radius: 2px; width: 0%; transition: width .1s linear; }
 
 /* ════════════════════════════════════
-   ⑩ SEND — 发给爸爸
+   ⑩ PRODUCT — 一杯酒，说尽千言
+════════════════════════════════════ */
+#product-sec {
+  background: radial-gradient(ellipse at 50% 0%, var(--ink-l) 0%, var(--ink) 60%);
+}
+#product-sec .sec-inner { padding: 72px 28px 64px; }
+
+.product-tagline {
+  font-family: var(--serif);
+  font-size: 19px; line-height: 1.95;
+  color: rgba(255,240,200,.85);
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.product-frame {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: 0 20px 70px rgba(0,0,0,.5), 0 0 0 1px rgba(232,160,32,.12);
+}
+.product-frame img { width:100%; display:block; }
+.product-badge {
+  position: absolute; top: 16px; left: 16px;
+  font-family: var(--sans); font-size: 10px; letter-spacing: 3px;
+  color: var(--ink); background: var(--gold-s);
+  padding: 6px 12px; border-radius: 20px; font-weight: 700;
+}
+
+.product-name {
+  font-family: var(--serif);
+  font-size: 26px; font-weight: 900;
+  color: var(--gold-w); text-align: center;
+  letter-spacing: 6px; margin-bottom: 6px;
+}
+.product-brand {
+  font-size: 11px; letter-spacing: 4px;
+  color: rgba(232,160,32,.45);
+  text-align: center; margin-bottom: 28px;
+}
+
+.product-features { margin-bottom: 32px; }
+.product-feature {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: rgba(255,240,200,.7);
+  line-height: 1.7; margin-bottom: 12px;
+}
+.product-feature:last-child { margin-bottom: 0; }
+.product-feature::before {
+  content: '✓'; color: var(--gold); font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+
+.product-countdown {
+  display: flex; justify-content: center; align-items: flex-start; gap: 10px;
+  margin-bottom: 28px;
+}
+.cd-block { text-align: center; }
+.cd-num {
+  font-family: var(--serif); font-size: 24px; font-weight: 900;
+  color: var(--gold-w); background: rgba(232,160,32,.08);
+  border: 1px solid rgba(232,160,32,.18);
+  border-radius: 8px; padding: 8px 4px; min-width: 46px; display: block;
+}
+.cd-label { font-size: 10px; color: rgba(232,160,32,.4); letter-spacing: 2px; margin-top: 6px; }
+.cd-colon { font-family: var(--serif); font-size: 24px; color: rgba(232,160,32,.3); padding-top: 6px; }
+
+.product-price-row {
+  display: flex; align-items: baseline; justify-content: center;
+  gap: 10px; margin-bottom: 24px;
+}
+.product-price {
+  font-size: 14px; color: rgba(232,160,32,.55); letter-spacing: 1px;
+}
+.product-price-original {
+  font-size: 12px; color: rgba(255,240,200,.25);
+  text-decoration: line-through;
+}
+
+.product-cta {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 18px;
+  background: linear-gradient(135deg, var(--gold-s), var(--gold-w));
+  color: var(--ink); border: none; border-radius: 50px;
+  font-size: 17px; font-family: var(--sans); font-weight: 700; letter-spacing: 2px;
+  cursor: pointer; text-decoration: none;
+  box-shadow: 0 8px 30px rgba(232,160,32,.35);
+  transition: transform .15s, box-shadow .15s;
+}
+.product-cta:active { transform: scale(.97); }
+
+.product-stock {
+  text-align: center; font-size: 11px;
+  color: rgba(232,160,32,.4); letter-spacing: 2px;
+  margin-top: 16px;
+}
+
+/* ════════════════════════════════════
+   ⑪ SEND — 发给爸爸
 ════════════════════════════════════ */
 #send-sec .sec-inner { padding: 70px 28px 60px; text-align: center; }
 
@@ -643,7 +768,7 @@ body {
 .send-hint-txt  { font-size: 12px; color: rgba(255,240,200,.35); margin-top: 16px; letter-spacing: 2px; }
 
 /* ════════════════════════════════════
-   ⑪ CLOSING — 与英雄遥遥呼应
+   ⑫ CLOSING — 与英雄遥遥呼应
 ════════════════════════════════════ */
 #closing-sec { background: radial-gradient(ellipse at 50% 60%, var(--ink-l) 0%, var(--ink) 70%); }
 #closing-sec .sec-inner {
@@ -835,7 +960,31 @@ body {
     </div>
   </section>
 
-  <!-- ⑩ SEND -->
+  <!-- ⑩ PRODUCT（premium）-->
+  <section id="product-sec" class="sec sec-dark premium-only">
+    <div class="sec-inner">
+      <p class="eyebrow eyebrow-light">献 给 父 亲 的 礼 物</p>
+      <p class="product-tagline" id="productTagline"></p>
+      <div class="product-frame">
+        <span class="product-badge" id="productBadge"></span>
+        <img id="productImg" src="" alt="父亲节礼物" loading="lazy">
+      </div>
+      <p class="product-name" id="productName"></p>
+      <p class="product-brand" id="productBrand"></p>
+      <div class="product-features" id="productFeatures"></div>
+      <div class="product-countdown" id="productCountdown"></div>
+      <div class="product-price-row">
+        <span class="product-price-original" id="productOriginalPrice"></span>
+        <span class="product-price" id="productPrice"></span>
+      </div>
+      <a class="product-cta" id="productCta" href="#" target="_blank" rel="noopener">
+        <span id="productCtaText">为爸爸订一瓶</span>
+      </a>
+      <p class="product-stock" id="productStock"></p>
+    </div>
+  </section>
+
+  <!-- ⑪ SEND -->
   <section id="send-sec" class="sec sec-dark">
     <div class="sec-inner">
       <p class="eyebrow eyebrow-light">发 给 爸 爸</p>
@@ -855,7 +1004,7 @@ body {
     </div>
   </section>
 
-  <!-- ⑪ CLOSING -->
+  <!-- ⑫ CLOSING -->
   <section id="closing-sec" class="sec">
     <div class="sec-inner">
       <div class="closing-petal">🌸</div>
@@ -967,6 +1116,9 @@ body {
       document.getElementById('bgAudio').src = C.bgMusicUrl;
       document.getElementById('music-fab').style.display = 'flex';
     }
+
+    /* 产品区（一杯酒） */
+    if (C.product) initProduct(C.product);
   }
 
   spawnPetals();
@@ -1099,6 +1251,68 @@ function buildWaveform() {
     b.style.animationDelay = (i * 0.06) + 's';
     wrap.appendChild(b);
   });
+}
+
+/* ─────────── 产品区（一杯酒） ─────────── */
+function initProduct(p) {
+  document.getElementById('productTagline').textContent = p.tagline || '';
+  document.getElementById('productImg').src   = p.image || '';
+  document.getElementById('productBadge').textContent = p.badge || '父亲节限定';
+  document.getElementById('productName').textContent  = p.name || '';
+  document.getElementById('productBrand').textContent = p.brand || '';
+
+  const fl = document.getElementById('productFeatures');
+  (p.features || []).forEach(f => {
+    const d = document.createElement('div'); d.className = 'product-feature';
+    d.textContent = f; fl.appendChild(d);
+  });
+
+  document.getElementById('productPrice').textContent = '¥' + p.price;
+  if (p.originalPrice) {
+    document.getElementById('productOriginalPrice').textContent = '¥' + p.originalPrice;
+  }
+
+  const cta = document.getElementById('productCta');
+  cta.href = p.ctaUrl || '#';
+  document.getElementById('productCtaText').textContent = p.ctaText || '为爸爸订一瓶';
+
+  if (p.stock != null) {
+    document.getElementById('productStock').textContent = `仅剩 ${p.stock} 份 · 父亲节前发货`;
+  }
+
+  if (p.deadline) startCountdown(p.deadline);
+}
+
+function startCountdown(deadline) {
+  const target = new Date(deadline).getTime();
+  const wrap = document.getElementById('productCountdown');
+  const units = [
+    { key: 'd', label: '天' },
+    { key: 'h', label: '时' },
+    { key: 'm', label: '分' },
+    { key: 's', label: '秒' },
+  ];
+  units.forEach((u, i) => {
+    if (i > 0) {
+      const colon = document.createElement('span');
+      colon.className = 'cd-colon'; colon.textContent = ':';
+      wrap.appendChild(colon);
+    }
+    const block = document.createElement('div'); block.className = 'cd-block';
+    block.innerHTML = `<span class="cd-num" id="cd-${u.key}">00</span><span class="cd-label">${u.label}</span>`;
+    wrap.appendChild(block);
+  });
+
+  function tick() {
+    const diff = Math.max(0, target - Date.now());
+    document.getElementById('cd-d').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+    document.getElementById('cd-h').textContent = String(Math.floor(diff % 86400000 / 3600000)).padStart(2, '0');
+    document.getElementById('cd-m').textContent = String(Math.floor(diff % 3600000 / 60000)).padStart(2, '0');
+    document.getElementById('cd-s').textContent = String(Math.floor(diff % 60000 / 1000)).padStart(2, '0');
+    if (diff <= 0) clearInterval(timer);
+  }
+  tick();
+  const timer = setInterval(tick, 1000);
 }
 
 /* ─────────── 录音播放 ─────────── */
