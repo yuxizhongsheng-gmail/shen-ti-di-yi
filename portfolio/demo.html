@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP 群高光 — 产品展示</title>
+<style>
+  :root {
+    --ink: #1c1b1a;
+    --ink-soft: #4a4744;
+    --muted: #8a8580;
+    --paper: #faf8f5;
+    --paper-2: #f1ede6;
+    --line: #e3ddd3;
+    --accent: #c2541f;
+    --accent-soft: #f3e4da;
+    --green: #4f7a5c;
+    --green-soft: #e6ede8;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Songti SC", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+    --mono: "SF Mono", "Consolas", "Menlo", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- Header ---------- */
+
+  header.hero {
+    border-bottom: 1px solid var(--line);
+    padding: 64px 0 48px;
+    background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%);
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 16px;
+    font-weight: 600;
+  }
+
+  h1.title {
+    font-family: var(--serif);
+    font-size: 48px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .tagline {
+    font-size: 19px;
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin: 0 0 28px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .meta-row span strong {
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  /* ---------- Section scaffolding ---------- */
+
+  section {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  section:last-of-type {
+    border-bottom: none;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: 30px;
+    margin: 0 0 8px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+
+  .section-intro {
+    color: var(--ink-soft);
+    font-size: 16px;
+    max-width: 680px;
+    margin: 0 0 32px;
+  }
+
+  /* ---------- Problem / Solution ---------- */
+
+  .ps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .ps-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    background: #fff;
+  }
+
+  .ps-card h3 {
+    font-family: var(--serif);
+    font-size: 19px;
+    margin: 0 0 10px;
+  }
+
+  .ps-card.problem { border-top: 3px solid var(--muted); }
+  .ps-card.solution { border-top: 3px solid var(--accent); }
+
+  .ps-card p { margin: 0 0 10px; color: var(--ink-soft); font-size: 15px; }
+  .ps-card p:last-child { margin-bottom: 0; }
+
+  .ps-card .highlight {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ---------- Highlight type cards ---------- */
+
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .type-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+    background: #fff;
+  }
+
+  .type-card .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .type-card h3 {
+    font-family: var(--serif);
+    font-size: 18px;
+    margin: 0 0 8px;
+  }
+
+  .type-card p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ---------- Workflow ---------- */
+
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+
+  .flow-step {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 12px;
+    background: #fff;
+    text-align: center;
+    position: relative;
+  }
+
+  .flow-step .step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .flow-step .step-name {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .flow-step .step-desc {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .flow-arrow {
+    display: none;
+  }
+
+  /* ---------- Sample cards ---------- */
+
+  .sample-block {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    background: #fff;
+  }
+
+  .sample-block:last-child { margin-bottom: 0; }
+
+  .sample-header {
+    padding: 14px 20px;
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sample-header .tag {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .sample-body {
+    padding: 24px;
+  }
+
+  /* weekly digest sample */
+
+  .digest-vol {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+
+  .digest-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 20px;
+  }
+
+  .digest-section {
+    margin-bottom: 18px;
+  }
+
+  .digest-section:last-child { margin-bottom: 0; }
+
+  .digest-section h4 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 0 0 8px;
+    font-family: var(--mono);
+  }
+
+  .digest-section p, .digest-section li {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+
+  .digest-section ul { margin: 0; padding-left: 20px; }
+
+  .quote-line {
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+    color: var(--ink);
+    font-style: italic;
+    margin: 8px 0;
+  }
+
+  .discussion-item {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: var(--paper);
+  }
+
+  .discussion-item:last-child { margin-bottom: 0; }
+
+  .discussion-item .d-title {
+    font-weight: 700;
+    font-size: 15px;
+    margin: 0 0 6px;
+  }
+
+  .discussion-item dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 4px 12px;
+    font-size: 13.5px;
+  }
+
+  .discussion-item dt {
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding-top: 2px;
+  }
+
+  .discussion-item dd {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  /* wechat sample */
+
+  .wechat-frame {
+    background: #ededed;
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .wechat-bubble {
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #2b2b2b;
+    line-height: 1.85;
+    position: relative;
+  }
+
+  .wechat-bubble::before {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 18px;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid #ffffff;
+  }
+
+  .wechat-bubble .wb-name {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .wechat-bubble strong { color: var(--accent); }
+
+  /* knowledge sample */
+
+  .kb-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .kb-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: var(--paper);
+  }
+
+  .kb-card .kb-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  .kb-card .kb-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .kb-card .kb-body {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .kb-card .kb-body dl {
+    margin: 4px 0 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 8px;
+  }
+
+  .kb-card .kb-body dt {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .kb-card .kb-body dd {
+    margin: 0;
+  }
+
+  /* ---------- Roles ---------- */
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .role-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+    background: #fff;
+  }
+
+  .role-card .role-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .role-card.user .role-tag { background: var(--accent-soft); color: var(--accent); }
+  .role-card.codex .role-tag { background: var(--green-soft); color: var(--green); }
+  .role-card.claude .role-tag { background: var(--paper-2); color: var(--ink-soft); }
+
+  .role-card h3 {
+    font-family: var(--serif);
+    font-size: 17px;
+    margin: 0 0 8px;
+  }
+
+  .role-card p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ---------- Quality bar ---------- */
+
+  .tier-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .tier {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 18px;
+    align-items: center;
+    background: #fff;
+  }
+
+  .tier .tier-name {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .tier .tier-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .tier.t1 { border-left: 4px solid #c9c4bc; }
+  .tier.t2 { border-left: 4px solid #bcae8f; }
+  .tier.t3 { border-left: 4px solid var(--green); }
+  .tier.t4 { border-left: 4px solid var(--accent); }
+
+  .ultimate {
+    border: 1px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .ultimate .u-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .ultimate .u-question {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ---------- Roadmap ---------- */
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .roadmap-card {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 18px;
+    background: #fff;
+  }
+
+  .roadmap-card .rm-num {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-soft);
+    -webkit-text-stroke: 1.5px var(--accent);
+    color: transparent;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .roadmap-card h3 {
+    font-size: 15px;
+    margin: 0 0 6px;
+    font-weight: 700;
+  }
+
+  .roadmap-card p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ---------- Footer ---------- */
+
+  footer {
+    padding: 40px 0 64px;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  .print-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 24px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-family: var(--sans);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    z-index: 10;
+  }
+
+  .print-btn:hover { background: var(--accent); }
+
+  /* ---------- Responsive ---------- */
+
+  @media (max-width: 760px) {
+    h1.title { font-size: 34px; }
+    .ps-grid, .three-col, .role-grid { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr 1fr; }
+    .kb-grid { grid-template-columns: 1fr; }
+    .roadmap { grid-template-columns: 1fr 1fr; }
+    .discussion-item dl { grid-template-columns: 1fr; }
+    .discussion-item dt { padding-top: 6px; }
+    section { padding: 40px 0; }
+    header.hero { padding: 48px 0 36px; }
+  }
+
+  @media (max-width: 480px) {
+    .roadmap { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ---------- Print ---------- */
+
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .print-btn { display: none; }
+    section { break-inside: avoid; padding: 24px 0; border-bottom: 1px solid #ddd; }
+    header.hero { background: none; padding: 24px 0; }
+    .wrap { max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">打印 / 导出 PDF</button>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Product Demo · 产品展示</p>
+    <h1 class="title">IP 群高光</h1>
+    <p class="tagline">把微信群里最能激活大家的内容，转化为作品样本、行动清单、社群记忆和长期知识资产。</p>
+    <div class="meta-row">
+      <span><strong>形态</strong> · Markdown 工作流 + 静态展示页</span>
+      <span><strong>阶段</strong> · MVP / Vol.001 验证中</span>
+      <span><strong>周期</strong> · 每周一个加工循环</span>
+    </div>
+  </div>
+</header>
+
+<section id="problem">
+  <div class="wrap">
+    <p class="section-label">Problem &amp; Solution</p>
+    <h2>群聊里的好内容，正在被刷走</h2>
+    <p class="section-intro">这不是「AI 总结群聊」。总结抹平了价值的不均匀分布；我们要做的是找到价值最集中的瞬间，把它剪出来。</p>
+    <div class="ps-grid">
+      <div class="ps-card problem">
+        <h3>核心问题</h3>
+        <p>一段精彩发言、一个被刷屏的作品、一场吵出真知的讨论——24 小时后就沉到聊天记录的几百楼之下，<span class="highlight">再也没人翻得到</span>。</p>
+        <p>群主想整理，但「读完全部消息再总结」成本太高，整理出来的东西又像会议纪要，没人想回复。</p>
+      </div>
+      <div class="ps-card solution">
+        <h3>产品解法</h3>
+        <p><span class="highlight">不总结全部聊天，而是抓反应峰值。</span>判断内容是否值得剪辑，看它在群里引发了什么——追问、点赞、围观、观点碰撞。</p>
+        <p>围绕反应峰值做三件事：剪辑成型、沉淀记忆、反哺创作者。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="types">
+  <div class="wrap">
+    <p class="section-label">Three Types of Highlights</p>
+    <h2>三类高光事件</h2>
+    <p class="section-intro">每周从群聊里识别并加工以下三类内容，它们分别对应周刊里不同的栏目和知识库。</p>
+    <div class="three-col">
+      <div class="type-card">
+        <div class="num">01 · 群主观点</div>
+        <h3>观点高光</h3>
+        <p>一个判断、一次纠偏、一段干货输出，引发认同或追问。是「本周洞察」与方法论库的主要来源。</p>
+      </div>
+      <div class="type-card">
+        <div class="num">02 · 群友作品</div>
+        <h3>作品高光</h3>
+        <p>群友分享自己的产出——文章、海报、账号、实验结果，获得关注与反馈。是「成员高光」与案例库的来源，也是反哺创作者最直接的部分。</p>
+      </div>
+      <div class="type-card">
+        <div class="num">03 · 话题讨论</div>
+        <h3>讨论高光</h3>
+        <p>一个问题引发多人接力，出现不同立场或新角度。是「高价值讨论精选」与下周选题库的来源。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="workflow">
+  <div class="wrap">
+    <p class="section-label">Weekly Workflow</p>
+    <h2>每周工作流</h2>
+    <p class="section-intro">七个文件、六个加工步骤，每一步都是「素材 + 一个明确的 prompt」喂给 AI，产出一个可核对的 Markdown 文件。</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">01</div>
+        <div class="step-name">素材输入</div>
+        <div class="step-desc">随手粘贴聊天记录到 inbox</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">02</div>
+        <div class="step-name">高光筛选</div>
+        <div class="step-desc">A / B / C 三级分类</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">03</div>
+        <div class="step-name">拆解成稿</div>
+        <div class="step-desc">生成正式周刊</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">04</div>
+        <div class="step-name">微信短版</div>
+        <div class="step-desc">3-5 分钟读完，可发群</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">05</div>
+        <div class="step-name">知识沉淀</div>
+        <div class="step-desc">六个长期资产库</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">06</div>
+        <div class="step-name">下周计划</div>
+        <div class="step-desc">话题 / 问题 / 作业 / 观察</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="samples">
+  <div class="wrap">
+    <p class="section-label">Output Samples</p>
+    <h2>产出示例</h2>
+    <p class="section-intro">以下是三种产出形态的示意（内容为示例，非真实群聊数据），用于展示同一份高光素材如何被改写为不同场景的版本。</p>
+
+    <!-- weekly digest sample -->
+    <div class="sample-block">
+      <div class="sample-header">
+        <span>outputs / weekly-digest.md</span>
+        <span class="tag">正式周刊</span>
+      </div>
+      <div class="sample-body">
+        <p class="digest-vol">IP群精华周刊 Vol.001</p>
+        <p class="digest-sub">2026-W24 ｜ 6月9日 - 6月15日</p>
+
+        <div class="digest-section">
+          <h4>本周一句话总览</h4>
+          <p>这周最大的共识是：起号别先做人设，先做「能被验证的内容」。</p>
+        </div>
+
+        <div class="digest-section">
+          <h4>本周最值得记住的洞察</h4>
+          <p><strong>「人设是结果，不是起点」</strong> —— 三位群友的起号经历都验证了同一件事：先靠几篇内容跑出数据，人设是从数据里长出来的，不是设计出来的。</p>
+        </div>
+
+        <div class="digest-section">
+          <h4>高价值讨论精选</h4>
+          <div class="discussion-item">
+            <p class="d-title">小红书起号：先做人设还是先做内容？</p>
+            <dl>
+              <dt>原始问题</dt><dd>新人提问：定位还没想清楚，要不要先憋一个完整人设再开始？</dd>
+              <dt>关键观点</dt><dd>「定位是写出来 20 篇之后复盘出来的，不是开局想出来的」</dd>
+              <dt>成员贡献</dt><dd>@阿May 分享了自己前 20 篇的数据对比截图</dd>
+              <dt>可执行建议</dt><dd>先发 10 篇不同角度的内容，用数据反推哪个角度该坚持</dd>
+              <dt>待追问</dt><dd>多久算一个「数据周期」？10 篇够不够？</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="digest-section">
+          <h4>本周可执行清单</h4>
+          <ul>
+            <li>本周内发 3 篇不设限角度的内容，记录完播率/互动数</li>
+            <li>把自己最近一篇被夸的发言整理成一段「方法论」发到群里</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- wechat short sample -->
+    <div class="sample-block">
+      <div class="sample-header">
+        <span>outputs / wechat-short.md</span>
+        <span class="tag">微信群短版</span>
+      </div>
+      <div class="sample-body">
+        <div class="wechat-frame">
+          <div class="wechat-bubble">
+            <div class="wb-name">群主</div>
+            这周群里有一段挺戳的对话 👇<br><br>
+            有人问「定位没想清楚能不能先开始」，@阿May 直接甩了数据对比图，结论特别实在：<br>
+            <strong>「定位是写完 20 篇之后复盘出来的，不是开局想出来的」</strong><br><br>
+            可执行的版本是：这周先发 3 篇不设限角度的内容，看完播率和互动，数据会告诉你答案。<br><br>
+            谢谢 @阿May 这周这么实诚地晒数据 🙏<br><br>
+            想问问大家：你们觉得「一个数据周期」大概要几篇内容才靠谱？10 篇够吗？评论区聊聊～
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- knowledge sample -->
+    <div class="sample-block">
+      <div class="sample-header">
+        <span>knowledge / *.md</span>
+        <span class="tag">知识库沉淀</span>
+      </div>
+      <div class="sample-body">
+        <div class="kb-grid">
+          <div class="kb-card">
+            <div class="kb-label">methods.md</div>
+            <div class="kb-title">用「数据周期」代替「人设设计」起号</div>
+            <div class="kb-body">
+              <dl>
+                <dt>来源</dt><dd>2026-W24，@阿May</dd>
+                <dt>步骤</dt><dd>发 10 篇不同角度内容 → 对比完播/互动 → 保留跑出数据的角度</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="kb-card">
+            <div class="kb-label">quotes.md</div>
+            <div class="kb-title">本周金句</div>
+            <div class="kb-body">
+              「定位是写出来 20 篇之后复盘出来的，不是开局想出来的」<br>
+              <span style="color:var(--muted); font-size:12px;">—— @阿May，2026-W24</span>
+            </div>
+          </div>
+          <div class="kb-card">
+            <div class="kb-label">member-questions.md</div>
+            <div class="kb-title">一个数据周期需要多少篇内容？</div>
+            <div class="kb-body">
+              <dl>
+                <dt>提问人</dt><dd>新人群友</dd>
+                <dt>状态</dt><dd>部分解决，留待下周讨论</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="kb-card">
+            <div class="kb-label">next-week-ideas.md</div>
+            <div class="kb-title">「10 篇够不够」可以做一期投票</div>
+            <div class="kb-body">
+              <dl>
+                <dt>来源</dt><dd>本周讨论的未解问题</dd>
+                <dt>形式</dt><dd>抛问题 + 邀请有经验的群友先回答</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roles">
+  <div class="wrap">
+    <p class="section-label">Collaboration</p>
+    <h2>三方分工</h2>
+    <p class="section-intro">这个项目本身的搭建过程，也是一次「人 + 多个 AI 协作」的实践——判断力、内容生成、工程结构分属不同角色。</p>
+    <div class="role-grid">
+      <div class="role-card user">
+        <span class="role-tag">用户</span>
+        <h3>产品判断</h3>
+        <p>决定要不要做、定位是什么、MVP 边界画在哪、质量标准如何定义，以及每期产出的最终发布把关。这部分不可外包。</p>
+      </div>
+      <div class="role-card codex">
+        <span class="role-tag">GPT-Codex</span>
+        <h3>内容生成执行</h3>
+        <p>在工作流的「内容生成」环节，按既定 prompt 和编辑标准产出周刊 / 短版 / 归档内容的初稿。</p>
+      </div>
+      <div class="role-card claude">
+        <span class="role-tag">Claude Code</span>
+        <h3>系统工程搭建</h3>
+        <p>设计目录结构、撰写六个 prompt 的编辑标准、构建知识库字段格式、搭建本展示页，把想法变成可重复运行的系统。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="quality">
+  <div class="wrap">
+    <p class="section-label">MVP Success Bar</p>
+    <h2>MVP 成功标准</h2>
+    <p class="section-intro">每期产出对照四档自评，判断这一期落在哪个区间，下一期该往哪个方向使劲。</p>
+    <div class="tier-list">
+      <div class="tier t1">
+        <div class="tier-name">平淡版本</div>
+        <div class="tier-desc">像普通周报、流水账，没人想回复。</div>
+      </div>
+      <div class="tier t2">
+        <div class="tier-name">合格版本</div>
+        <div class="tier-desc">能清楚复盘本周高光，有可执行建议。</div>
+      </div>
+      <div class="tier t3">
+        <div class="tier-name">优秀版本</div>
+        <div class="tier-desc">被提到的人愿意回复，群友觉得有用。</div>
+      </div>
+      <div class="tier t4">
+        <div class="tier-name">惊艳版本</div>
+        <div class="tier-desc">群友开始主动想被收录，项目能放进求职作品集。</div>
+      </div>
+    </div>
+    <div class="ultimate">
+      <div class="u-label">终极标准</div>
+      <p class="u-question">这份东西有没有让一个普通微信群，突然显得像一个正在共同创作的社区？</p>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <p class="section-label">Roadmap</p>
+    <h2>后续路线</h2>
+    <p class="section-intro">四个方向按顺序推进，每个方向只有在前一个被验证后才启动。</p>
+    <div class="roadmap">
+      <div class="roadmap-card">
+        <span class="rm-num">01</span>
+        <h3>外显化</h3>
+        <p>把产出从「群主自己看」变成群友可见、可参与的形态，让「被收录」成为群内的可见认可。</p>
+      </div>
+      <div class="roadmap-card">
+        <span class="rm-num">02</span>
+        <h3>专门化</h3>
+        <p>针对不同类型社群（技术群 / 读书会 / 商业社群）调整筛选标准和栏目结构。</p>
+      </div>
+      <div class="roadmap-card">
+        <span class="rm-num">03</span>
+        <h3>自动化</h3>
+        <p>替换人工粘贴素材的输入方式，但筛选与改写始终保留 AI + 人工复核。</p>
+      </div>
+      <div class="roadmap-card">
+        <span class="rm-num">04</span>
+        <h3>复利化</h3>
+        <p>用知识库反向生产新内容——「三个月内最常提到的方法论」「悬而未决的问题专题」。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="no-print">
+  <div class="wrap">
+    项目文档：product-brief.md · references.md · quality-bar.md · case-study.md ｜ 工作流：prompts/01-06
+  </div>
+</footer>
+
+</body>
+</html>
