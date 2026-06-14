@@ -72,6 +72,7 @@ const CONFIG = {
 
   audioUrl:   "",
   bgMusicUrl: "",
+  voiceText:  "爸，这些文字我写了又删，删了又写，最后还是想亲口跟你说一句：父亲节快乐。这些年辛苦你了，我都记在心里。",
 
   /* ── 父亲节礼物：一杯酒（premium 专属）── */
   product: {
@@ -625,6 +626,17 @@ body {
 .audio-prog-wrap { height: 4px; background: rgba(200,134,10,.2); border-radius: 2px; overflow: hidden; }
 .audio-prog-fill { height: 100%; background: var(--gold); border-radius: 2px; width: 0%; transition: width .1s linear; }
 
+.audio-voice-text {
+  display: none;
+  font-family: var(--serif); font-size: 15px; line-height: 1.9;
+  color: var(--t-mid); text-align: left;
+  margin-top: 22px; padding: 18px 20px;
+  background: rgba(255,255,255,.5);
+  border: 1px solid rgba(200,134,10,.18);
+  border-radius: 12px;
+}
+.audio-voice-text.show { display: block; }
+
 .audio-music-tag {
   display: none; align-items: center; justify-content: center; gap: 6px;
   font-size: 11px; color: var(--t-soft); letter-spacing: 1px;
@@ -837,18 +849,6 @@ body {
   letter-spacing: 3px;
 }
 
-/* ── 背景音乐 FAB ── */
-#music-fab {
-  position: fixed; bottom: 28px; right: 18px;
-  width: 50px; height: 50px; border-radius: 50%;
-  background: var(--gold); border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 18px rgba(200,134,10,.5); z-index: 999;
-}
-#music-fab.spin { animation: mSpin 3s linear infinite; }
-#music-fab svg  { width: 22px; height: 22px; fill: white; }
-@keyframes mSpin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
-
 /* ── 通用动效 ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
@@ -977,18 +977,19 @@ body {
     </div>
   </section>
 
-  <!-- ⑨ AUDIO（premium，有 audioUrl 才显示）-->
+  <!-- ⑨ AUDIO（premium，点击同时播放录音与轻音乐）-->
   <section id="audio-sec" class="sec sec-warm premium-only">
     <div class="sec-inner">
       <p class="eyebrow">亲 口 说 的 话</p>
       <div class="audio-card">
-        <p class="audio-hint" id="audioHint">点击播放，听我亲口说给你听</p>
+        <p class="audio-hint" id="audioHint">点击播放，听我想对你说的话</p>
         <div class="audio-wave" id="audioWave"></div>
         <button class="audio-play" id="playBtn" onclick="togglePlayback()">
           <svg id="playIcon" viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
         </button>
         <div class="audio-prog-wrap"><div class="audio-prog-fill" id="progFill"></div></div>
-        <p class="audio-music-tag" id="musicTag"><span class="note">♪</span><span>背景音乐同步播放</span></p>
+        <p class="audio-music-tag show" id="musicTag"><span class="note">♪</span><span>轻音乐同步响起</span></p>
+        <p class="audio-voice-text" id="voiceTextEl"></p>
       </div>
     </div>
   </section>
@@ -1050,11 +1051,6 @@ body {
   </section>
 
 </div><!-- /#app -->
-
-<!-- 背景音乐 FAB -->
-<button id="music-fab" onclick="toggleBgMusic()" style="display:none" title="背景音乐">
-  <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-</button>
 
 <audio id="bgAudio" loop></audio>
 <audio id="voiceAudio"></audio>
@@ -1148,23 +1144,22 @@ body {
       document.getElementById('restore-sec').style.display = 'none';
     }
 
-    /* 录音 + 背景音乐 */
+    /* 录音 + 背景音乐：点击按钮一键响起
+       有真实录音就播录音，没有就用语音朗读 voiceText；
+       有真实背景音乐就播放音乐文件，没有就生成一段轻音乐伴奏 */
     if (C.audioUrl) {
       document.getElementById('voiceAudio').src = C.audioUrl;
-      buildWaveform();
-      if (C.bgMusicUrl) {
-        document.getElementById('bgAudio').src = C.bgMusicUrl;
-        document.getElementById('musicTag').classList.add('show');
-        document.getElementById('audioHint').textContent = '点击播放，听我亲口说给你听（背景音乐同步响起）';
-      }
-    } else if (C.bgMusicUrl) {
-      /* 没有录音，仅背景音乐：悬浮按钮播放氛围音乐 */
-      document.getElementById('bgAudio').src = C.bgMusicUrl;
-      document.getElementById('music-fab').style.display = 'flex';
-      document.getElementById('audio-sec').style.display = 'none';
+      document.getElementById('audioHint').textContent = '点击播放，听我亲口说给你听';
     } else {
-      document.getElementById('audio-sec').style.display = 'none';
+      document.getElementById('audioHint').textContent = '点击播放，听听我想对你说的话';
+      const vt = document.getElementById('voiceTextEl');
+      vt.textContent = C.voiceText;
+      vt.classList.add('show');
     }
+    if (C.bgMusicUrl) {
+      document.getElementById('bgAudio').src = C.bgMusicUrl;
+    }
+    buildWaveform();
 
     /* 产品区（一杯酒） */
     if (C.product) initProduct(C.product);
@@ -1377,29 +1372,25 @@ function startCountdown(deadline) {
   const timer = setInterval(tick, 1000);
 }
 
-/* ─────────── 录音播放 ─────────── */
+/* ─────────── 录音 / 语音留言 + 轻音乐：一键同时响起 ─────────── */
+const PLAY_ICON  = '<polygon points="6,4 20,12 6,20"/>';
+const PAUSE_ICON = '<rect x="5" y="4" width="4" height="16"/><rect x="15" y="4" width="4" height="16"/>';
+const DUCK_VOLUME = 0.22;
+const PAD_VOLUME  = 0.07;
+
 const voiceEl = document.getElementById('voiceAudio');
+const bgEl    = document.getElementById('bgAudio');
 let voicePlaying = false;
+let speaking     = false;
 
 voiceEl.ontimeupdate = () => {
   if (!voiceEl.duration) return;
   const fill = document.getElementById('progFill');
   if (fill) fill.style.width = (voiceEl.currentTime / voiceEl.duration * 100) + '%';
 };
-voiceEl.onended = () => {
-  voicePlaying = false;
-  const icon = document.getElementById('playIcon');
-  if (icon) icon.innerHTML = '<polygon points="6,4 20,12 6,20"/>';
-  const fill = document.getElementById('progFill');
-  if (fill) fill.style.width = '0%';
-  const wave = document.querySelectorAll('.wave-bar');
-  wave.forEach(b => b.style.animationPlayState = 'paused');
-  document.getElementById('musicTag').classList.remove('on');
-  if (CONFIG.bgMusicUrl) fadeAudio(bgEl, bgEl.volume, 0, 1200, () => bgEl.pause());
-};
+voiceEl.onended = () => endPlayback();
 
-/* ─────────── 音量渐变（音频 ducking） ─────────── */
-const DUCK_VOLUME = 0.22;
+/* 音量渐变（音频 ducking） */
 function fadeAudio(el, from, to, duration, onDone) {
   const start = performance.now();
   el.volume = from;
@@ -1411,28 +1402,104 @@ function fadeAudio(el, from, to, duration, onDone) {
   })(start);
 }
 
-/* 录音 + 背景音乐：一键同时响起（点击播放即点亮回忆） */
-function togglePlayback() {
-  if (!CONFIG.audioUrl) { alert('暂无录音文件'); return; }
-  const icon  = document.getElementById('playIcon');
-  const waves = document.querySelectorAll('.wave-bar');
-  const musicTag = document.getElementById('musicTag');
-  if (voicePlaying) {
-    voiceEl.pause(); voicePlaying = false;
-    icon.innerHTML = '<polygon points="6,4 20,12 6,20"/>';
-    waves.forEach(b => b.style.animationPlayState = 'paused');
-    musicTag.classList.remove('on');
-    if (CONFIG.bgMusicUrl) fadeAudio(bgEl, bgEl.volume, 0, 1200, () => bgEl.pause());
+/* 没有提供背景音乐文件时，用 Web Audio 生成一段柔和的伴奏 */
+let padCtx, padGain, padStarted = false;
+function ensurePad() {
+  if (padStarted) return;
+  padStarted = true;
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return;
+  padCtx = new Ctx();
+  padGain = padCtx.createGain();
+  padGain.gain.value = 0;
+  padGain.connect(padCtx.destination);
+  [130.81, 164.81, 196.00, 261.63].forEach(freq => {
+    const osc = padCtx.createOscillator();
+    osc.type = 'sine'; osc.frequency.value = freq;
+    const g = padCtx.createGain(); g.gain.value = 0.25;
+    osc.connect(g); g.connect(padGain); osc.start();
+  });
+  const lfo = padCtx.createOscillator();
+  lfo.frequency.value = 0.1;
+  const lfoGain = padCtx.createGain(); lfoGain.gain.value = 0.02;
+  lfo.connect(lfoGain); lfoGain.connect(padGain.gain); lfo.start();
+}
+function padFadeTo(target, duration) {
+  ensurePad();
+  if (!padCtx) return;
+  if (padCtx.state === 'suspended') padCtx.resume();
+  const now = padCtx.currentTime;
+  padGain.gain.cancelScheduledValues(now);
+  padGain.gain.setValueAtTime(padGain.gain.value, now);
+  padGain.gain.linearRampToValueAtTime(target, now + duration / 1000);
+}
+
+/* 没有真实录音时，用语音朗读 voiceText */
+function speakVoice(text, onend) {
+  if (!('speechSynthesis' in window)) { onend(); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN'; u.rate = 0.95; u.pitch = 1.02;
+  const voice = speechSynthesis.getVoices().find(v => /zh/i.test(v.lang));
+  if (voice) u.voice = voice;
+  u.onend = onend; u.onerror = onend;
+  speechSynthesis.speak(u);
+
+  const fill = document.getElementById('progFill');
+  const estMs = Math.max(2000, text.length * 260);
+  fill.style.transition = 'none';
+  fill.style.width = '0%';
+  requestAnimationFrame(() => {
+    fill.style.transition = `width ${estMs}ms linear`;
+    fill.style.width = '100%';
+  });
+}
+
+function startMusic() {
+  if (CONFIG.bgMusicUrl) {
+    bgEl.volume = 0; bgEl.currentTime = 0;
+    bgEl.play().then(() => fadeAudio(bgEl, 0, DUCK_VOLUME, 800)).catch(() => {});
   } else {
+    padFadeTo(PAD_VOLUME, 800);
+  }
+}
+function stopMusic() {
+  if (CONFIG.bgMusicUrl) {
+    fadeAudio(bgEl, bgEl.volume, 0, 1200, () => bgEl.pause());
+  } else {
+    padFadeTo(0, 1200);
+  }
+}
+
+function endPlayback() {
+  voicePlaying = false; speaking = false;
+  const icon = document.getElementById('playIcon');
+  if (icon) icon.innerHTML = PLAY_ICON;
+  const fill = document.getElementById('progFill');
+  if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
+  document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'paused');
+  document.getElementById('musicTag').classList.remove('on');
+  stopMusic();
+}
+
+/* 点击播放：录音/语音留言 与 轻音乐 同时响起 */
+function togglePlayback() {
+  if (voicePlaying || speaking) {
+    if (voicePlaying) voiceEl.pause();
+    if (speaking) speechSynthesis.cancel();
+    endPlayback();
+    return;
+  }
+  document.getElementById('playIcon').innerHTML = PAUSE_ICON;
+  document.querySelectorAll('.wave-bar').forEach(b => b.style.animationPlayState = 'running');
+  document.getElementById('musicTag').classList.add('on');
+  startMusic();
+
+  if (CONFIG.audioUrl) {
     voiceEl.play(); voicePlaying = true;
-    icon.innerHTML = '<rect x="5" y="4" width="4" height="16"/><rect x="15" y="4" width="4" height="16"/>';
-    waves.forEach(b => b.style.animationPlayState = 'running');
-    if (CONFIG.bgMusicUrl) {
-      bgEl.volume = 0;
-      bgEl.currentTime = 0;
-      bgEl.play().then(() => fadeAudio(bgEl, 0, DUCK_VOLUME, 800)).catch(() => {});
-      musicTag.classList.add('on');
-    }
+  } else {
+    speaking = true;
+    speakVoice(CONFIG.voiceText, endPlayback);
   }
 }
 
@@ -1456,14 +1523,6 @@ function copyMsg() {
   }
 }
 
-/* ─────────── 背景音乐 ─────────── */
-const bgEl  = document.getElementById('bgAudio');
-const fabEl = document.getElementById('music-fab');
-let bgOn = false;
-function toggleBgMusic() {
-  if (bgOn) { bgEl.pause(); bgOn = false; fabEl.classList.remove('spin'); }
-  else { bgEl.play().then(() => { bgOn = true; fabEl.classList.add('spin'); }).catch(()=>{}); }
-}
 </script>
 </body>
 </html>

@@ -329,10 +329,14 @@ header {
       <!-- 语音 & 音乐 -->
       <div class="section">
         <div class="group">
-          <div class="group-head"><span class="group-title">声音</span><span class="group-tag">臻享版</span></div>
-          <p class="group-desc">填写音频直链（mp3/m4a 等）。留空则不展示对应板块。两者都填时，点击播放按钮会同时响起——录音清晰播放，背景音乐自动调低音量在底层伴奏，结束后自动淡出，营造"边听你的声音边听歌"的电影感。仅填背景音乐时，将作为页面右下角的氛围音乐按钮单独播放。</p>
-          <div class="field"><label>亲口告白录音链接</label><input id="audioUrl" placeholder="https://..."></div>
-          <div class="field"><label>背景音乐链接（与录音同步播放，自动调低音量）</label><input id="bgMusicUrl" placeholder="https://..."></div>
+          <div class="group-head"><span class="group-title">亲口说的话</span><span class="group-tag">臻享版</span></div>
+          <p class="group-desc">这是网站里最打动爸爸的一块——点击播放按钮，"说的话"与轻音乐会同时响起。有录音文件就播放录音；没有的话，会用语音朗读下面这段「想对你说的话」，效果一样动人，不用任何录音设备也能用。</p>
+          <div class="field">
+            <label>想对你说的话（没有录音文件时，会被朗读出来，并显示在播放器下方）</label>
+            <textarea id="voiceText">爸，这些文字我写了又删，删了又写，最后还是想亲口跟你说一句：父亲节快乐。这些年辛苦你了，我都记在心里。</textarea>
+          </div>
+          <div class="field"><label>亲口告白录音链接（选填，留空则用上方文字朗读代替）</label><input id="audioUrl" placeholder="https://..."></div>
+          <div class="field"><label>背景音乐链接（选填，与录音/朗读同步播放，自动调低音量；留空则自动生成一段轻音乐）</label><input id="bgMusicUrl" placeholder="https://..."></div>
         </div>
       </div>
 
@@ -393,6 +397,7 @@ function buildConfig(templateConfig) {
     restorationAfter: '',
     audioUrl: '',
     bgMusicUrl: '',
+    voiceText: val('voiceText') || templateConfig.voiceText,
     product: templateConfig.product,
   };
 
