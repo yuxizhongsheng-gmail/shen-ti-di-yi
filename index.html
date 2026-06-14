@@ -25,7 +25,11 @@
    CONFIG — 只改这里，整个页面跟着变
    plan: "basic"   → 9.9 纯文字版
    plan: "premium" → 19.9 全功能版
+
+   提示：可以用 customize.html 填写表单自动生成本文件，
+   不需要手动改这里。下面两行标记是生成器的定位锚点，请勿删除。
 ================================================================ */
+/* CONFIG-START */
 const CONFIG = {
   plan: "premium",
 
@@ -95,6 +99,7 @@ const CONFIG = {
     ctaUrl:  "#",
   },
 };
+/* CONFIG-END */
 </script>
 
 <style>
@@ -1087,31 +1092,43 @@ body {
     document.querySelectorAll('.premium-only').forEach(el => el.classList.remove('premium-only'));
 
     /* 照片 */
-    const rail = document.getElementById('polaroidRail');
-    (C.photos || []).forEach(item => {
-      const div = document.createElement('div'); div.className = 'polaroid';
-      const img = document.createElement('img'); img.loading = 'lazy';
-      img.alt = '家庭照片'; setImg(img, item.url || item, '家庭照片');
-      div.appendChild(img);
-      if (item.caption) {
-        const cap = document.createElement('p'); cap.className = 'polaroid-cap';
-        cap.textContent = item.caption; div.appendChild(cap);
-      }
-      rail.appendChild(div);
-    });
+    if ((C.photos || []).length) {
+      const rail = document.getElementById('polaroidRail');
+      C.photos.forEach(item => {
+        const div = document.createElement('div'); div.className = 'polaroid';
+        const img = document.createElement('img'); img.loading = 'lazy';
+        img.alt = '家庭照片'; setImg(img, item.url || item, '家庭照片');
+        div.appendChild(img);
+        if (item.caption) {
+          const cap = document.createElement('p'); cap.className = 'polaroid-cap';
+          cap.textContent = item.caption; div.appendChild(cap);
+        }
+        rail.appendChild(div);
+      });
+    } else {
+      document.getElementById('photos-sec').style.display = 'none';
+    }
 
     /* 时间轴 */
-    const tl = document.getElementById('tlBody');
-    (C.timeline || []).forEach(item => {
-      const d = document.createElement('div'); d.className = 'tl-item';
-      d.innerHTML = `<div class="tl-dot"></div><p class="tl-year">${item.year}</p><p class="tl-text">${item.text}</p>`;
-      tl.appendChild(d);
-    });
+    if ((C.timeline || []).length) {
+      const tl = document.getElementById('tlBody');
+      C.timeline.forEach(item => {
+        const d = document.createElement('div'); d.className = 'tl-item';
+        d.innerHTML = `<div class="tl-dot"></div><p class="tl-year">${item.year}</p><p class="tl-text">${item.text}</p>`;
+        tl.appendChild(d);
+      });
+    } else {
+      document.getElementById('timeline-sec').style.display = 'none';
+    }
 
     /* 修复对比 */
-    setImg(document.getElementById('rsBefore'),   C.restorationBefore, '修复前照片');
-    setImg(document.getElementById('rsAfterImg'), C.restorationAfter,  '修复后照片');
-    initRestoreSlider();
+    if (C.restorationBefore && C.restorationAfter) {
+      setImg(document.getElementById('rsBefore'),   C.restorationBefore, '修复前照片');
+      setImg(document.getElementById('rsAfterImg'), C.restorationAfter,  '修复后照片');
+      initRestoreSlider();
+    } else {
+      document.getElementById('restore-sec').style.display = 'none';
+    }
 
     /* 录音 */
     if (C.audioUrl) {

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no, email=no">
+<title>父亲节礼物 · 定制工具</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:   #0C0701; --ink-m: #1C0E04; --ink-l: #2A1808;
+  --gold:  #C8860A; --gold-w:#E8A020; --gold-s:#F2BE50; --gold-glow: rgba(232,160,32,.22);
+  --cream: #FDFAF5; --cream2:#FFF7EC; --paper: #FEFCF8;
+  --t-dark:#1A0E04; --t-mid: #5C3A18; --t-soft: #8A6038; --t-muted:#B09070;
+  --sh-s: 0 2px 12px rgba(20,10,3,.07);
+  --sh-m: 0 4px 28px rgba(20,10,3,.11);
+  --serif: "Noto Serif SC", "Songti SC", "Noto Serif CJK SC", "STSong", "SimSun", Georgia, serif;
+  --sans:  -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--t-dark); font-family: var(--sans); line-height: 1.8; }
+
+#app { max-width: 480px; margin: 0 auto; padding-bottom: 110px; }
+
+/* ── 顶部 ── */
+header {
+  background: radial-gradient(ellipse at 50% 30%, var(--ink-l) 0%, var(--ink) 75%);
+  padding: 56px 28px 40px; text-align: center;
+}
+.h-eye {
+  font-family: var(--sans); font-size: 10px; letter-spacing: 6px;
+  color: rgba(232,160,32,.55); margin-bottom: 18px;
+}
+.h-title {
+  font-family: var(--serif); font-size: 28px; font-weight: 900;
+  color: var(--gold-w); letter-spacing: 4px; margin-bottom: 10px;
+}
+.h-sub {
+  font-family: var(--serif); font-size: 13px; color: rgba(255,240,200,.45);
+  letter-spacing: 2px;
+}
+
+/* ── 通用 ── */
+.section { padding: 28px 20px 4px; }
+.eyebrow {
+  font-family: var(--sans); font-size: 10.5px; letter-spacing: 5px;
+  color: var(--gold); text-align: center; margin-bottom: 18px;
+}
+
+.group {
+  background: var(--cream); border-radius: 18px; padding: 22px 20px;
+  margin-bottom: 16px; box-shadow: var(--sh-s);
+}
+.group-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.group-title {
+  font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--t-dark);
+  letter-spacing: 1px;
+}
+.group-tag {
+  font-size: 9px; letter-spacing: 2px; font-weight: 700; color: var(--gold);
+  border: 1px solid rgba(200,134,10,.35); border-radius: 20px; padding: 2px 8px;
+}
+.group-desc { font-size: 12px; color: var(--t-muted); margin-bottom: 16px; line-height: 1.7; }
+
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block; font-size: 11.5px; color: var(--t-soft);
+  margin-bottom: 6px; letter-spacing: 1px;
+}
+.field input, .field textarea {
+  width: 100%; padding: 12px 14px; border: 1px solid rgba(200,134,10,.18);
+  border-radius: 10px; font-family: var(--sans); font-size: 14px;
+  color: var(--t-dark); background: white; resize: vertical;
+}
+.field textarea { min-height: 78px; line-height: 1.7; }
+.field input:focus, .field textarea:focus {
+  outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,134,10,.12);
+}
+.field .hint { font-size: 11px; color: var(--t-muted); margin-top: 5px; }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.kw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ── 套餐选择 ── */
+.plan-cards { display: flex; gap: 12px; margin-bottom: 8px; }
+.plan-card {
+  flex: 1; border: 2px solid rgba(200,134,10,.15); border-radius: 16px;
+  padding: 16px 14px; cursor: pointer; text-align: center;
+  transition: border-color .2s, background .2s;
+  background: var(--cream);
+}
+.plan-card input { display: none; }
+.plan-card .pc-name {
+  font-family: var(--serif); font-size: 15px; font-weight: 700;
+  color: var(--t-dark); margin-bottom: 4px; letter-spacing: 2px;
+}
+.plan-card .pc-price {
+  font-family: var(--serif); font-size: 22px; font-weight: 900; color: var(--gold);
+}
+.plan-card .pc-desc { font-size: 11px; color: var(--t-muted); margin-top: 4px; }
+.plan-card.active {
+  border-color: var(--gold); background: var(--cream2);
+  box-shadow: 0 4px 16px rgba(200,134,10,.18);
+}
+
+/* ── 折叠的 premium 分组 ── */
+.premium-zone.hidden { display: none; }
+
+/* ── 底部操作栏 ── */
+.action-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: var(--ink); padding: 14px 18px;
+  box-shadow: 0 -6px 24px rgba(0,0,0,.35);
+}
+.action-row { display: flex; gap: 10px; max-width: 480px; margin: 0 auto; }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; border-radius: 50px; cursor: pointer;
+  font-family: var(--sans); font-size: 14.5px; font-weight: 700; letter-spacing: 2px;
+  padding: 14px 18px; text-decoration: none;
+  transition: transform .15s;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary {
+  flex: 1.4;
+  background: linear-gradient(135deg, var(--gold-s), var(--gold-w));
+  color: var(--ink); box-shadow: 0 6px 22px rgba(232,160,32,.35);
+}
+.btn-secondary {
+  flex: 1;
+  background: transparent; color: var(--gold-w);
+  border: 1px solid rgba(232,160,32,.35);
+}
+.btn[disabled] { opacity: .5; pointer-events: none; }
+
+.status {
+  text-align: center; font-size: 12px; color: rgba(232,160,32,.6);
+  letter-spacing: 1px; margin-top: 10px; min-height: 16px;
+}
+.status.error { color: #E8754A; }
+.status.ok    { color: #6FCF97; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <p class="h-eye">礼 物 定 制 工 具</p>
+    <p class="h-title">填一次表<br>生成专属网页</p>
+    <p class="h-sub">为爸爸定制 · 父亲节 2026</p>
+  </header>
+
+  <form id="form" onsubmit="return false;">
+
+    <!-- 套餐 -->
+    <div class="section">
+      <p class="eyebrow">选 择 版 本</p>
+      <div class="plan-cards">
+        <label class="plan-card active" id="planBasicCard">
+          <input type="radio" name="plan" value="basic" checked>
+          <div class="pc-name">基础版</div>
+          <div class="pc-price">¥9.9</div>
+          <div class="pc-desc">信件 · 关键词 · 一键发送</div>
+        </label>
+        <label class="plan-card" id="planPremiumCard">
+          <input type="radio" name="plan" value="premium">
+          <div class="pc-name">臻享版</div>
+          <div class="pc-price">¥19.9</div>
+          <div class="pc-desc">+相册/时光轴/修复/录音/好礼</div>
+        </label>
+      </div>
+    </div>
+
+    <!-- 基础信息 -->
+    <div class="section">
+      <div class="group">
+        <div class="group-head"><span class="group-title">基础信息</span></div>
+        <div class="row2">
+          <div class="field">
+            <label>爸爸的称呼</label>
+            <input id="fatherName" value="爸爸" placeholder="爸爸 / 老爸 / 父亲">
+          </div>
+          <div class="field">
+            <label>你的名字</label>
+            <input id="childName" value="小明" placeholder="你的名字">
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>你的出生年份</label>
+            <input id="childBirthYear" type="number" value="2002" placeholder="2002">
+          </div>
+          <div class="field">
+            <label>送达日期</label>
+            <input id="date" value="2026年6月21日" placeholder="2026年6月21日">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 开场白 -->
+    <div class="section">
+      <div class="group">
+        <div class="group-head"><span class="group-title">开场的一句话</span></div>
+        <p class="group-desc">页面打开后第一眼看到的话，建议简短、有悬念。</p>
+        <div class="field">
+          <textarea id="openingQuote">有些话，我一直藏在心里很多年。今天，我想说出来。</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 关键词 -->
+    <div class="section">
+      <div class="group">
+        <div class="group-head"><span class="group-title">他是一个怎样的人</span></div>
+        <p class="group-desc">用 5 个词，描述你眼中的爸爸（会逐一动画呈现）。</p>
+        <div class="kw-grid">
+          <div class="field"><input id="kw1" value="沉默"></div>
+          <div class="field"><input id="kw2" value="责任"></div>
+          <div class="field"><input id="kw3" value="撑家"></div>
+          <div class="field"><input id="kw4" value="不善言辞"></div>
+          <div class="field"><input id="kw5" value="山一样的人"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 信件 -->
+    <div class="section">
+      <div class="group">
+        <div class="group-head"><span class="group-title">写给爸爸的信</span></div>
+        <p class="group-desc">分四段——回忆、理解、感谢、祝福，越具体越打动人。</p>
+        <div class="field">
+          <label>第一段 · 回忆</label>
+          <textarea id="p1">小时候我总觉得你是个严肃的人。你很少开口，但家里的每一件事你都记着——电费涨了你知道，我成绩单来了你知道，我鞋子小了你也知道。只是那时我太小，读不懂沉默里藏着多少话。</textarea>
+        </div>
+        <div class="field">
+          <label>第二段 · 理解</label>
+          <textarea id="p2">后来我离开家去读书，才慢慢明白，你给我的那些东西没有一件是买得到的。是你骑着车送我上学的那条路，是你半夜起来给我盖被子的那只手，是你从来不说「我爱你」，却把所有好的都留给我的那种方式。</textarea>
+        </div>
+        <div class="field">
+          <label>第三段 · 感谢</label>
+          <textarea id="p3">我知道我不是一个经常说谢谢的孩子。有时候我甚至不接你的电话，还嫌你唠叨。但我想让你知道，你做的每一件事，我都记得，一件都没忘。以后我会更常联系你，也会努力成为让你骄傲的人。</textarea>
+        </div>
+        <div class="field">
+          <label>第四段 · 祝福</label>
+          <textarea id="p4">今年父亲节，我没有办法陪在你身边，但我希望你能感受到这几个字：爸，你辛苦了，谢谢你，我很爱你。往后的日子，请你多爱惜自己。</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 发送文案 -->
+    <div class="section">
+      <div class="group">
+        <div class="group-head"><span class="group-title">一键发送的话</span></div>
+        <p class="group-desc">点击页面底部按钮可一键复制，方便直接发到微信。</p>
+        <div class="field">
+          <textarea id="sendMessage">爸，父亲节快乐。这些年辛苦了，谢谢你。我爱你。</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ 臻享版专属 ════ -->
+    <div class="premium-zone hidden" id="premiumZone">
+
+      <!-- 相册 -->
+      <div class="section">
+        <div class="group">
+          <div class="group-head"><span class="group-title">回忆相册</span><span class="group-tag">臻享版</span></div>
+          <p class="group-desc">最多 4 张照片，填图片直链。可上传到任意图床后粘贴链接，留空则不展示该张。</p>
+          <div class="field"><label>照片 1 · 链接</label><input id="photo1url" placeholder="https://..."><div class="hint"></div></div>
+          <div class="field"><label>照片 1 · 文字</label><input id="photo1cap" placeholder="那年夏天"></div>
+          <div class="field"><label>照片 2 · 链接</label><input id="photo2url" placeholder="https://..."></div>
+          <div class="field"><label>照片 2 · 文字</label><input id="photo2cap" placeholder="我们家"></div>
+          <div class="field"><label>照片 3 · 链接</label><input id="photo3url" placeholder="https://..."></div>
+          <div class="field"><label>照片 3 · 文字</label><input id="photo3cap" placeholder="最喜欢这张"></div>
+          <div class="field"><label>照片 4 · 链接</label><input id="photo4url" placeholder="https://..."></div>
+          <div class="field"><label>照片 4 · 文字</label><input id="photo4cap" placeholder="在一起"></div>
+        </div>
+      </div>
+
+      <!-- 时光轴 -->
+      <div class="section">
+        <div class="group">
+          <div class="group-head"><span class="group-title">时光轴</span><span class="group-tag">臻享版</span></div>
+          <p class="group-desc">最多 5 条，年份 + 一句话，按时间顺序填写。年份和内容都留空则不展示该条。</p>
+          <div class="row2 field">
+            <input id="tl1year" placeholder="年份，如 2002">
+            <input id="tl1text" placeholder="发生的事">
+          </div>
+          <div class="row2 field">
+            <input id="tl2year" placeholder="年份">
+            <input id="tl2text" placeholder="发生的事">
+          </div>
+          <div class="row2 field">
+            <input id="tl3year" placeholder="年份">
+            <input id="tl3text" placeholder="发生的事">
+          </div>
+          <div class="row2 field">
+            <input id="tl4year" placeholder="年份">
+            <input id="tl4text" placeholder="发生的事">
+          </div>
+          <div class="row2 field">
+            <input id="tl5year" placeholder="年份">
+            <input id="tl5text" placeholder="发生的事">
+          </div>
+        </div>
+      </div>
+
+      <!-- 老照片修复 -->
+      <div class="section">
+        <div class="group">
+          <div class="group-head"><span class="group-title">老照片修复对比</span><span class="group-tag">臻享版</span></div>
+          <p class="group-desc">放一张旧照片和一张修复/上色后的版本，两项都填写才会展示该板块。</p>
+          <div class="field"><label>修复前 · 图片链接</label><input id="rsBefore" placeholder="https://..."></div>
+          <div class="field"><label>修复后 · 图片链接</label><input id="rsAfter" placeholder="https://..."></div>
+        </div>
+      </div>
+
+      <!-- 语音 & 音乐 -->
+      <div class="section">
+        <div class="group">
+          <div class="group-head"><span class="group-title">声音</span><span class="group-tag">臻享版</span></div>
+          <p class="group-desc">填写音频直链（mp3/m4a 等）。留空则不展示对应板块。</p>
+          <div class="field"><label>亲口告白录音链接</label><input id="audioUrl" placeholder="https://..."></div>
+          <div class="field"><label>背景音乐链接</label><input id="bgMusicUrl" placeholder="https://..."></div>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+  <div class="section" style="padding-top:8px">
+    <p style="font-size:11px;color:var(--t-muted);text-align:center;line-height:1.8">
+      生成的网页需要与本工具放在同一文件夹内运行。<br>
+      若点击生成后提示失败，请将整个文件夹上传到网站托管后再打开本工具。
+    </p>
+  </div>
+</div>
+
+<div class="action-bar">
+  <div class="action-row">
+    <button class="btn btn-secondary" id="previewBtn" type="button" onclick="generate('preview')">预 览</button>
+    <button class="btn btn-primary" id="downloadBtn" type="button" onclick="generate('download')">生成并下载</button>
+  </div>
+  <p class="status" id="status"></p>
+</div>
+
+<script>
+/* 套餐切换 */
+document.querySelectorAll('.plan-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    card.querySelector('input').checked = true;
+    const isPremium = card.querySelector('input').value === 'premium';
+    document.getElementById('premiumZone').classList.toggle('hidden', !isPremium);
+  });
+});
+
+const val = id => (document.getElementById(id).value || '').trim();
+
+function buildConfig(templateConfig) {
+  const plan = document.querySelector('input[name=plan]:checked').value;
+
+  const cfg = {
+    plan,
+    fatherName:     val('fatherName')    || templateConfig.fatherName,
+    childName:      val('childName')     || templateConfig.childName,
+    childBirthYear: parseInt(val('childBirthYear'), 10) || templateConfig.childBirthYear,
+    date:           val('date')          || templateConfig.date,
+    openingQuote:   val('openingQuote')  || templateConfig.openingQuote,
+    keywords: [1,2,3,4,5].map(i => val('kw' + i)).filter(Boolean),
+    letter: {
+      p1: val('p1') || templateConfig.letter.p1,
+      p2: val('p2') || templateConfig.letter.p2,
+      p3: val('p3') || templateConfig.letter.p3,
+      p4: val('p4') || templateConfig.letter.p4,
+    },
+    sendMessage: val('sendMessage') || templateConfig.sendMessage,
+    photos: [],
+    timeline: [],
+    restorationBefore: '',
+    restorationAfter: '',
+    audioUrl: '',
+    bgMusicUrl: '',
+    product: templateConfig.product,
+  };
+
+  if (!cfg.keywords.length) cfg.keywords = templateConfig.keywords;
+
+  if (plan === 'premium') {
+    cfg.photos = [1,2,3,4]
+      .map(i => ({ url: val('photo' + i + 'url'), caption: val('photo' + i + 'cap') }))
+      .filter(p => p.url);
+
+    cfg.timeline = [1,2,3,4,5]
+      .map(i => ({ year: val('tl' + i + 'year'), text: val('tl' + i + 'text') }))
+      .filter(t => t.year && t.text);
+
+    cfg.restorationBefore = val('rsBefore');
+    cfg.restorationAfter  = val('rsAfter');
+    cfg.audioUrl   = val('audioUrl');
+    cfg.bgMusicUrl = val('bgMusicUrl');
+  }
+
+  return cfg;
+}
+
+async function generate(mode) {
+  const statusEl = document.getElementById('status');
+  statusEl.className = 'status';
+  statusEl.textContent = '生成中…';
+
+  try {
+    const res = await fetch('index.html');
+    if (!res.ok) throw new Error('找不到 index.html');
+    const html = await res.text();
+
+    const startMarker = '/* CONFIG-START */';
+    const endMarker   = '/* CONFIG-END */';
+    const startIdx = html.indexOf(startMarker);
+    const endIdx   = html.indexOf(endMarker);
+    if (startIdx === -1 || endIdx === -1) throw new Error('模板缺少 CONFIG 标记');
+
+    const configCode = html.slice(startIdx + startMarker.length, endIdx);
+    const templateConfig = new Function(configCode + '\nreturn CONFIG;')();
+
+    const newConfig = buildConfig(templateConfig);
+    const newConfigCode = '\nconst CONFIG = ' + JSON.stringify(newConfig, null, 2) + ';\n';
+
+    const result = html.slice(0, startIdx + startMarker.length)
+                  + newConfigCode
+                  + html.slice(endIdx);
+
+    const blob = new Blob([result], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    if (mode === 'preview') {
+      window.open(url, '_blank');
+      statusEl.className = 'status ok';
+      statusEl.textContent = '已在新标签页打开预览';
+    } else {
+      const a = document.createElement('a');
+      const name = (val('fatherName') || '爸爸').replace(/[\\/:*?"<>|]/g, '');
+      a.href = url;
+      a.download = `给${name}的父亲节礼物.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      statusEl.className = 'status ok';
+      statusEl.textContent = '已生成并下载，可直接发给爸爸';
+    }
+  } catch (err) {
+    statusEl.className = 'status error';
+    statusEl.textContent = '生成失败：' + err.message + '（请确认本文件与 index.html 在同一目录，并通过网页服务器打开）';
+  }
+}
+</script>
+</body>
+</html>
