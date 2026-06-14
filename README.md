@@ -104,3 +104,7 @@ A 级每周 3-6 条足够，宁缺毋滥——这是整个工作流里最重要�
 - [`portfolio/case-study.md`](./portfolio/case-study.md)：完整的产品实践案例，包含问题发现、产品决策、AI 协作分工与验证方式。
 - [`references.md`](./references.md)：这个项目向 9 个世界级内容产品学了什么。
 - [`quality-bar.md`](./quality-bar.md)：四档质量标准与终极标准。
+
+## 其他
+
+- [`tools/adb-setup.md`](./tools/adb-setup.md)：Windows 安装 Android Platform Tools（adb）的最短步骤（与本项目工作流无关，仅作本地工具参考）。
