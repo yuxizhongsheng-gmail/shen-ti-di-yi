@@ -1,0 +1,6 @@
+# IP 群高光 · OCR 步骤依赖
+# 安装：pip install -r requirements.txt
+# 还需要单独安装 Tesseract-OCR 本体（含 chi_sim 中文语言包），见 src/ocr_extract.py 顶部说明。
+
+Pillow>=10.0.0
+pytesseract>=0.3.10

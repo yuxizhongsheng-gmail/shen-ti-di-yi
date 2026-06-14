@@ -1,0 +1,39 @@
+{
+  "_comment": "事件检测规则配置。纯关键词/规则匹配，不调用大模型。可按群的实际语言习惯增删关键词。",
+
+  "reaction_keywords": [
+    "哈哈哈", "笑死", "牛", "太强了", "学到了", "收藏了", "已收藏",
+    "厉害", "求链接", "马克", "已码", "蹲一个", "蹲", "赞", "顶",
+    "受教了", "好实用", "太有用了", "有用", "记下了", "学习了",
+    "支持", "围观", "冲", "好家伙", "yyds", "+1", "牛批", "牛逼"
+  ],
+
+  "share_keywords": [
+    "分享", "我写的", "我做的", "我画的", "我拍的", "我录的",
+    "新作品", "刚发布", "上线了", "发布了", "做了一个", "写了一篇",
+    "录了", "拍了", "更新了", "出炉了", "成品", "成稿",
+    "http", "https", "链接在这", "戳这里"
+  ],
+
+  "question_indicators": [
+    "?", "？", "怎么", "如何", "为什么", "为啥",
+    "有没有人", "求问", "请问", "大家觉得", "有人遇到过"
+  ],
+
+  "admin_name_hints": [
+    "群主", "班长", "@所有人", "助教", "主理人"
+  ],
+
+  "min_responses_for_work_feedback": 2,
+  "min_responses_for_discussion": 3,
+  "response_window_lines": 8,
+
+  "min_announcement_length": 20,
+  "cross_group_keyword_overlap": 2,
+
+  "score_weights": {
+    "base_response": 1.0,
+    "keyword_match": 0.5,
+    "cross_group_bonus": 2.0
+  }
+}
