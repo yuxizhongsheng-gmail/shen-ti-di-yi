@@ -625,6 +625,23 @@ body {
 .audio-prog-wrap { height: 4px; background: rgba(200,134,10,.2); border-radius: 2px; overflow: hidden; }
 .audio-prog-fill { height: 100%; background: var(--gold); border-radius: 2px; width: 0%; transition: width .1s linear; }
 
+.audio-music-tag {
+  display: none; align-items: center; justify-content: center; gap: 6px;
+  font-size: 11px; color: var(--t-soft); letter-spacing: 1px;
+  margin-top: 18px; opacity: .65;
+}
+.audio-music-tag.show { display: flex; }
+.audio-music-tag .note {
+  font-size: 13px; display: inline-block;
+  animation: notePulse 1.4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.audio-music-tag.on .note { animation-play-state: running; }
+@keyframes notePulse {
+  0%,100% { opacity:.4; transform: scale(1) translateY(0); }
+  50%      { opacity:1; transform: scale(1.2) translateY(-2px); }
+}
+
 /* ════════════════════════════════════
    ⑩ PRODUCT — 一杯酒，说尽千言
 ════════════════════════════════════ */
@@ -965,12 +982,13 @@ body {
     <div class="sec-inner">
       <p class="eyebrow">亲 口 说 的 话</p>
       <div class="audio-card">
-        <p class="audio-hint">点击播放，听我亲口说给你听</p>
+        <p class="audio-hint" id="audioHint">点击播放，听我亲口说给你听</p>
         <div class="audio-wave" id="audioWave"></div>
-        <button class="audio-play" id="playBtn" onclick="toggleVoice()">
+        <button class="audio-play" id="playBtn" onclick="togglePlayback()">
           <svg id="playIcon" viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
         </button>
         <div class="audio-prog-wrap"><div class="audio-prog-fill" id="progFill"></div></div>
+        <p class="audio-music-tag" id="musicTag"><span class="note">♪</span><span>背景音乐同步播放</span></p>
       </div>
     </div>
   </section>
@@ -1130,18 +1148,22 @@ body {
       document.getElementById('restore-sec').style.display = 'none';
     }
 
-    /* 录音 */
+    /* 录音 + 背景音乐 */
     if (C.audioUrl) {
       document.getElementById('voiceAudio').src = C.audioUrl;
       buildWaveform();
-    } else {
-      document.getElementById('audio-sec').style.display = 'none';
-    }
-
-    /* 背景音乐 */
-    if (C.bgMusicUrl) {
+      if (C.bgMusicUrl) {
+        document.getElementById('bgAudio').src = C.bgMusicUrl;
+        document.getElementById('musicTag').classList.add('show');
+        document.getElementById('audioHint').textContent = '点击播放，听我亲口说给你听（背景音乐同步响起）';
+      }
+    } else if (C.bgMusicUrl) {
+      /* 没有录音，仅背景音乐：悬浮按钮播放氛围音乐 */
       document.getElementById('bgAudio').src = C.bgMusicUrl;
       document.getElementById('music-fab').style.display = 'flex';
+      document.getElementById('audio-sec').style.display = 'none';
+    } else {
+      document.getElementById('audio-sec').style.display = 'none';
     }
 
     /* 产品区（一杯酒） */
@@ -1372,20 +1394,45 @@ voiceEl.onended = () => {
   if (fill) fill.style.width = '0%';
   const wave = document.querySelectorAll('.wave-bar');
   wave.forEach(b => b.style.animationPlayState = 'paused');
+  document.getElementById('musicTag').classList.remove('on');
+  if (CONFIG.bgMusicUrl) fadeAudio(bgEl, bgEl.volume, 0, 1200, () => bgEl.pause());
 };
 
-function toggleVoice() {
+/* ─────────── 音量渐变（音频 ducking） ─────────── */
+const DUCK_VOLUME = 0.22;
+function fadeAudio(el, from, to, duration, onDone) {
+  const start = performance.now();
+  el.volume = from;
+  (function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    el.volume = from + (to - from) * p;
+    if (p < 1) requestAnimationFrame(step);
+    else if (onDone) onDone();
+  })(start);
+}
+
+/* 录音 + 背景音乐：一键同时响起（点击播放即点亮回忆） */
+function togglePlayback() {
   if (!CONFIG.audioUrl) { alert('暂无录音文件'); return; }
   const icon  = document.getElementById('playIcon');
   const waves = document.querySelectorAll('.wave-bar');
+  const musicTag = document.getElementById('musicTag');
   if (voicePlaying) {
     voiceEl.pause(); voicePlaying = false;
     icon.innerHTML = '<polygon points="6,4 20,12 6,20"/>';
     waves.forEach(b => b.style.animationPlayState = 'paused');
+    musicTag.classList.remove('on');
+    if (CONFIG.bgMusicUrl) fadeAudio(bgEl, bgEl.volume, 0, 1200, () => bgEl.pause());
   } else {
     voiceEl.play(); voicePlaying = true;
     icon.innerHTML = '<rect x="5" y="4" width="4" height="16"/><rect x="15" y="4" width="4" height="16"/>';
     waves.forEach(b => b.style.animationPlayState = 'running');
+    if (CONFIG.bgMusicUrl) {
+      bgEl.volume = 0;
+      bgEl.currentTime = 0;
+      bgEl.play().then(() => fadeAudio(bgEl, 0, DUCK_VOLUME, 800)).catch(() => {});
+      musicTag.classList.add('on');
+    }
   }
 }
 
