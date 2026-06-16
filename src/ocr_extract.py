@@ -43,6 +43,12 @@ def parse_args(argv=None):
     p.add_argument("--week", required=True)
     p.add_argument("--force", action="store_true", help="忽略缓存，全部重新识别")
     p.add_argument("--config", default=str(common.DEFAULT_CONFIG_PATH))
+    p.add_argument(
+        "--api-ocr",
+        action="store_true",
+        help="（未实现）允许调用外部 API 做 OCR。默认关闭，须显式传入才生效，"
+             "以保证默认流程 0 API 消耗。",
+    )
     return p.parse_args(argv)
 
 
@@ -170,6 +176,11 @@ def iter_screenshots(manifest: dict):
 
 def main(argv=None) -> int:
     args = parse_args(argv)
+
+    if args.api_ocr:
+        print("[安全提示] --api-ocr 已传入：如果本地 OCR 不可用，将尝试调用外部 API。")
+        print("           当前版本：API OCR 未实现，将自动降级为手动模板模式。")
+
     config = common.load_config(Path(args.config))
     week = args.week
 
@@ -219,13 +230,21 @@ def main(argv=None) -> int:
                 )
                 return 1  # 非 0 表示需要手动干预
 
-    # 有 OCR 引擎（或手动模板已加载）
-    cache: dict = {} if args.force else common.load_json(common.ocr_cache_path(week), default={})
+    # 有 OCR 引擎（或手动模板已加载 / 缓存已覆盖）
+    # 无引擎时（ocr_fn is None）忽略 --force，避免丢失手动填写的内容
+    if ocr_fn is None:
+        cache: dict = common.load_json(common.ocr_cache_path(week), default={})
+    else:
+        cache = {} if args.force else common.load_json(common.ocr_cache_path(week), default={})
 
     new_count = 0
     for _, _, entry in all_shots:
         sha = entry["sha256"]
         if sha in cache:
+            continue
+        if ocr_fn is None:
+            # 手动模板未覆盖此截图：置空（不抛异常）
+            cache[sha] = ""
             continue
         img = common.PROJECT_ROOT / entry["file"]
         if not img.exists():

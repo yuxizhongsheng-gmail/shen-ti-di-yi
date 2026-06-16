@@ -8,6 +8,70 @@
 
 素材采集这一端新增了一个**本地 Bot**（`src/wechat_capture_bot.py` 等）：通过 ADB 操作手机当前可见的微信界面，自动截图、滚动、OCR、规则初筛，产出「候选高光」交给 AI 做后续判断。采集 / OCR / 初筛这三步**不调用任何大模型**，详见下方「素材采集自动化」一节。
 
+## 小白一键运行
+
+**只想跑 Bot？跟着这 5 步走，不需要理解任何细节。**
+
+全程 0 API 消耗：不调用 Claude / DeepSeek / GPT，不读取微信数据库，不发消息，截图只保存在本地。
+
+### 第一步：手机连电脑（一次性）
+
+1. 安卓手机用 **数据线**（非充电专用线）连接 Windows 电脑
+2. 手机 → 设置 → 关于手机 → 连续点「版本号」7次 → 开启「开发者选项」
+3. 手机 → 设置 → 开发者选项 → 打开「USB 调试」
+4. 手机屏幕弹出「允许此计算机进行 USB 调试？」→ 勾选「始终允许」→ 确定
+
+### 第二步：装 adb（一次性）
+
+按 [`tools/adb-setup.md`](./tools/adb-setup.md) 下载 Android Platform Tools，
+把 `adb.exe` 放进项目的 `tools/platform-tools/` 目录。
+
+### 第三步：确认 adb 看到手机
+
+打开 PowerShell，进入项目目录，运行：
+
+```powershell
+tools\platform-tools\adb.exe devices
+```
+
+应该看到类似输出（序列号因手机不同而不同）：
+
+```
+List of devices attached
+R5CT81234567    device
+```
+
+如果只有 `List of devices attached` 这一行，说明手机没连上，回到第一步检查数据线和 USB 调试。
+
+### 第四步：运行 Bot
+
+```powershell
+.\scripts\run_phone_bot.ps1 -Week 2026-W24
+```
+
+Bot 启动后会：
+1. 自动把微信切到前台
+2. 提示你「请在手机上打开微信，进入「xxx群」，滚到本周最早的一条消息，按 Enter 开始」
+3. 你按 Enter 后，Bot 开始自动截图 + 向下滚动，直到检测到底部
+4. 截图完所有群后，自动做 OCR 和规则初筛
+
+> 如果没有安装 Tesseract OCR，第 4 步会停下来，生成 `runs\2026-W24\manual_ocr_template.md`——
+> 打开这个文件，照截图把聊天内容填进去，再重新运行上面的命令即可。
+
+### 第五步：看结果
+
+Bot 跑完后，去 `runs\2026-W24\` 找这个文件：
+
+```
+runs\2026-W24\candidate_events.md   ← 候选高光事件（重点看这个）
+```
+
+看到 `===== ✅ 全部完成，全程 0 API 消耗 =====` 就表示 Bot 成功了。
+
+把 `candidate_events.md` 交给 Claude，配合 `prompts/01-extract.md` 做精筛，这才是第一次用到 AI 的地方。
+
+---
+
 ## 目录结构
 
 ```
@@ -157,22 +221,24 @@ ADB 的 `screencap` 截取的是「手机屏幕上正在显示的画面」——
 3. （OCR 需要）`pip install -r requirements.txt`，再安装 Tesseract-OCR 本体并勾选中文语言包，详见 `src/ocr_extract.py` 顶部说明
 4. 按需调整 `config/wechat_groups.json`（群名、采集周数、日期范围）和 `config/event_rules.json`（关键词规则）
 
-每周运行（任选其一）：
+每周运行：
 
 ```powershell
-# 一次性跑完 采集 -> OCR -> 规则检测
-.\scripts\run_week_pipeline.ps1 -Week 2026-W24
-
-# 或者分步跑
-.\scripts\run_capture_week.ps1 -Week 2026-W24    # 采集截图（需要在手机上操作）
-.\scripts\run_ocr_week.ps1 -Week 2026-W24        # 本地 OCR
-.\scripts\run_detect_week.ps1 -Week 2026-W24     # 规则筛选候选事件
+# 主入口：手机接线 -> 自动截图 -> 本地 OCR -> 规则初筛（全程 0 API）
+.\scripts\run_phone_bot.ps1 -Week 2026-W24
 
 # 补采某一天
-.\scripts\run_capture_week.ps1 -Week 2026-W24 -Backfill 2026-06-07
+.\scripts\run_phone_bot.ps1 -Week 2026-W24 -Backfill 2026-06-07
+
+# 只采集特定群
+.\scripts\run_phone_bot.ps1 -Week 2026-W24 -Groups main
+
+# 没有手机/ADB，只有手动截图？用这个替代入口：
+.\scripts\build_candidate_events.ps1 -Week 2026-W24
+# （先把截图放到 inbox\adb_captures\2026-W24\main\ 下）
 ```
 
-采集过程中，Bot 会在终端提示「请在手机上打开微信，进入「群名」，滚动到采集窗口最早的消息处，按 Enter 继续」——这是唯一需要你操作手机的步骤，之后 Bot 自动截图+滚动直到检测到底部（连续多张截图内容相同）或达到上限。中断后重新运行同一命令即可断点续采。
+采集过程中，Bot 会把微信切到前台，然后提示「请在手机上进入「群名」，滚到本周最早的一条消息处，按 Enter 开始」——之后 Bot 自动截图+向下滚动，直到检测到底部（连续多张截图相同）或达到上限。Ctrl+C 可随时中断，进度已保存，重新运行同一命令可断点续采。
 
 ### 哪些步骤不消耗模型额度
 
@@ -180,7 +246,7 @@ ADB 的 `screencap` 截取的是「手机屏幕上正在显示的画面」——
 
 | 步骤 | 产出 | 说明 |
 |---|---|---|
-| `wechat_capture_bot.py` | `runs/2026-Wxx/capture_manifest.json`<br>`runs/2026-Wxx/capture_log.md` | 纯 ADB 截图+滑动 |
+| `wechat_capture_bot.py` | `inbox/adb_captures/2026-Wxx/<group>/`（截图）<br>`runs/2026-Wxx/capture_manifest.json`<br>`runs/2026-Wxx/capture_log.md` | 纯 ADB 截图+滑动 |
 | `ocr_extract.py` | `runs/2026-Wxx/ocr_text.md` | 本地 Tesseract OCR |
 | `event_detector.py` | `runs/2026-Wxx/candidate_events.md`<br>`runs/2026-Wxx/event_scores.json` | 纯关键词/规则匹配 |
 

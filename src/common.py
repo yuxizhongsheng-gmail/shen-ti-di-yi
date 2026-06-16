@@ -67,7 +67,7 @@ def week_dir(week: str) -> Path:
 
 
 def captures_dir(week: str, group_id: str, backfill_date: str | None = None) -> Path:
-    base = week_dir(week) / "captures" / group_id
+    base = PROJECT_ROOT / "inbox" / "adb_captures" / week / group_id
     if backfill_date:
         base = base / f"backfill_{backfill_date}"
     base.mkdir(parents=True, exist_ok=True)

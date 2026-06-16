@@ -197,6 +197,9 @@ def main(argv=None) -> int:
 
     print(f"已连接设备：{serial}，屏幕尺寸：{screen_size[0]}x{screen_size[1]}")
 
+    print("正在把微信切到前台……")
+    common.bring_wechat_foreground(adb_path, serial)
+
     all_groups = [g for g in config.get("groups", []) if g.get("enabled", True)]
     if args.groups:
         wanted = set(args.groups.split(","))
