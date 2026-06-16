@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-"""IP 群高光 · 规则化高响应事件检测
+"""IP 群高光 · 规则化事件检测
 
-读取 ocr_text（通过 ocr_cache.json + capture_manifest.json 重建按截图顺序排列的文本行），
-用纯关键词/规则匹配筛出三类候选高光事件，不调用任何大模型 API。
+读取 ocr_cache.json + capture_manifest.json，
+用纯关键词/规则筛出三类候选高光事件，不调用大模型。
 
 三类事件：
     1. member_work_feedback        群友作品引发反馈
-    2. topic_discussion            群友话题引发讨论
-    3. muted_group_owner_response  禁言群群主内容在交流群引发响应
+    2. topic_discussion            群友话题引发多人讨论
+    3. muted_group_owner_response  禁言群群主信息在交流群引发响应
+
+每条事件的评分维度：
+    • 多人响应 (0-2)      ─ response_count >= 2 → 满分
+    • 有触发点 (0-2)      ─ 命中 share/question 关键词
+    • 反馈质量 (0-1.5)    ─ 反馈关键词命中数量
+    • 适合公开 (0/1)      ─ 无隐私红旗词为满分，有则扣分并标记
+    [跨群加成 +2]
 
 输出：
-    runs/<week>/candidate_events.md   人工/Claude 快速浏览用
-    runs/<week>/event_scores.json     结构化数据，供下一步筛选使用
-
-这一步产出的是「候选」，不是结论 —— 真正的判断（是否真的有价值、怎么改写）
-留给 prompts/01-extract.md 配合 Claude/GPT 来做。
+    runs/<week>/candidate_events.md    人工速览 + 下一步给 Claude
+    runs/<week>/event_scores.json      结构化数据
 
 用法：
     python src/event_detector.py --week 2026-W24
 """
-
 from __future__ import annotations
 
 import argparse
@@ -28,322 +31,381 @@ from pathlib import Path
 
 import common
 
-TYPE_LABELS = {
-    "member_work_feedback": "群友作品引发反馈",
-    "topic_discussion": "群友话题引发讨论",
-    "muted_group_owner_response": "禁言群群主内容在交流群引发响应",
+TYPE_CN = {
+    "member_work_feedback":       "群友作品引发反馈",
+    "topic_discussion":           "群友话题引发多人讨论",
+    "muted_group_owner_response": "禁言群群主信息在交流群引发响应",
 }
 
 
 def parse_args(argv=None):
-    parser = argparse.ArgumentParser(description="规则化高响应事件检测（不调用大模型）")
-    parser.add_argument("--week", required=True, help="周数，如 2026-W24")
-    parser.add_argument("--config", default=str(common.DEFAULT_CONFIG_PATH), help="配置文件路径")
-    parser.add_argument("--rules", default=str(common.DEFAULT_RULES_PATH), help="事件规则文件路径")
-    return parser.parse_args(argv)
+    p = argparse.ArgumentParser()
+    p.add_argument("--week", required=True)
+    p.add_argument("--config", default=str(common.DEFAULT_CONFIG_PATH))
+    p.add_argument("--rules", default=str(common.DEFAULT_RULES_PATH))
+    return p.parse_args(argv)
 
 
-# ---------------------------------------------------------------------------
-# 构建按截图顺序排列的文本行
-# ---------------------------------------------------------------------------
+# ─────────────────────────────────────────────
+# 文本行流
+# ─────────────────────────────────────────────
 
-def build_line_streams(manifest: dict, cache: dict) -> dict[str, list[dict]]:
-    """返回 {group_id: [{"text", "file", "scope"}, ...]}，按采集顺序排列。
-
-    同一 group_id 下，main 与各 backfill 的行按 (scope 名称) 顺序依次拼接——
-    backfill 视为同一群的延伸文本，供跨群规则统一检索。
-    """
+def build_streams(manifest: dict, cache: dict) -> dict[str, list[dict]]:
+    """返回 {group_id: [{"text", "file"}, ...]} 按截图顺序。"""
     streams: dict[str, list[dict]] = {}
-    for group_id, group_state in manifest.get("groups", {}).items():
+    for gid, gs in manifest.get("groups", {}).items():
         lines: list[dict] = []
-        for entry in group_state.get("screens", []):
-            text = cache.get(entry["sha256"], "")
-            for raw in text.splitlines():
+        for entry in gs.get("screens", []):
+            for raw in (cache.get(entry["sha256"]) or "").splitlines():
                 t = raw.strip()
                 if t:
-                    lines.append({"text": t, "file": entry["file"], "scope": "main"})
-        for date, backfill_state in sorted(group_state.get("backfills", {}).items()):
-            for entry in backfill_state.get("screens", []):
-                text = cache.get(entry["sha256"], "")
-                for raw in text.splitlines():
+                    lines.append({"text": t, "file": entry["file"]})
+        for bf in gs.get("backfills", {}).values():
+            for entry in bf.get("screens", []):
+                for raw in (cache.get(entry["sha256"]) or "").splitlines():
                     t = raw.strip()
                     if t:
-                        lines.append({"text": t, "file": entry["file"], "scope": f"backfill_{date}"})
-        streams[group_id] = lines
+                        lines.append({"text": t, "file": entry["file"]})
+        streams[gid] = lines
     return streams
 
 
-def merge_into_blocks(lines: list[dict]) -> list[list[dict]]:
-    """把连续的"正文行"合并为段落块；遇到很短的行（疑似时间/昵称/表情回应）就断开。"""
-    blocks: list[list[dict]] = []
-    current: list[dict] = []
-    for item in lines:
-        if len(item["text"]) <= 3:
-            if current:
-                blocks.append(current)
-                current = []
-            continue
-        current.append(item)
-    if current:
-        blocks.append(current)
-    return blocks
+# ─────────────────────────────────────────────
+# 评分
+# ─────────────────────────────────────────────
 
+def score_event(response_items: list[dict], kw_hits: list[str],
+                rules: dict, is_cross: bool = False) -> tuple[float, dict]:
+    w = rules.get("score_weights", {})
+    breakdown: dict[str, float] = {}
 
-def char_ngrams(text: str, n: int = 4) -> set[str]:
-    text = "".join(text.split())
-    if len(text) < n:
-        return {text} if text else set()
-    return {text[i:i + n] for i in range(len(text) - n + 1)}
+    # 1. 多人响应
+    rc = len(response_items)
+    breakdown["多人响应"] = round(min(rc / 2, 1.0) * w.get("multi_person_response", 2.0), 2)
 
+    # 2. 有触发点
+    breakdown["有触发点"] = round(min(len(kw_hits), 2) / 2 * w.get("has_trigger", 2.0), 2)
 
-# ---------------------------------------------------------------------------
-# 规则 1 & 2：单群内的逐行扫描
-# ---------------------------------------------------------------------------
-
-def detect_in_group_events(
-    group_id: str,
-    label: str,
-    lines: list[dict],
-    rules: dict,
-) -> list[dict]:
-    events = []
+    # 3. 反馈质量（去重命中数）
     reaction_kw = rules.get("reaction_keywords", [])
-    share_kw = rules.get("share_keywords", [])
-    question_kw = rules.get("question_indicators", [])
-    window = rules.get("response_window_lines", 8)
-    min_work = rules.get("min_responses_for_work_feedback", 2)
-    min_disc = rules.get("min_responses_for_discussion", 3)
-    weights = rules.get("score_weights", {})
-    base_w = weights.get("base_response", 1.0)
-    kw_w = weights.get("keyword_match", 0.5)
+    rq_hits = {r for item in response_items for r in reaction_kw if r in item["text"]}
+    breakdown["反馈质量"] = round(min(len(rq_hits) / 3, 1.0) * w.get("reaction_quality", 1.5), 2)
 
-    for i, item in enumerate(lines):
-        text = item["text"]
+    # 4. 适合公开（默认满分，有红旗词置 0）
+    breakdown["适合公开"] = w.get("public_suitable", 1.0)
 
-        # 规则 1：群友作品引发反馈
-        share_hits = [kw for kw in share_kw if kw in text]
-        if share_hits:
-            responses = []
-            for j in range(i + 1, min(i + 1 + window, len(lines))):
-                if any(kw in lines[j]["text"] for kw in reaction_kw):
-                    responses.append(lines[j])
-            if len(responses) >= min_work:
-                events.append({
-                    "type": "member_work_feedback",
-                    "group": group_id,
-                    "label": label,
-                    "trigger_line": text,
-                    "response_lines": [r["text"] for r in responses],
-                    "keywords_matched": share_hits,
-                    "source_screens": _unique_files([item] + responses),
-                    "score": round(base_w * len(responses) + kw_w * len(share_hits), 2),
-                })
+    if is_cross:
+        breakdown["跨群加成"] = w.get("cross_group_bonus", 2.0)
 
-        # 规则 2：群友话题引发讨论
-        is_question = text.rstrip().endswith(("?", "？")) or any(kw in text for kw in question_kw)
-        if is_question:
-            responses = []
-            for j in range(i + 1, min(i + 1 + window, len(lines))):
-                cand = lines[j]["text"]
-                if len(cand) >= 4 and not any(kw in cand for kw in reaction_kw):
-                    responses.append(lines[j])
-            if len(responses) >= min_disc:
-                events.append({
-                    "type": "topic_discussion",
-                    "group": group_id,
-                    "label": label,
-                    "trigger_line": text,
-                    "response_lines": [r["text"] for r in responses],
-                    "keywords_matched": [kw for kw in question_kw if kw in text],
-                    "source_screens": _unique_files([item] + responses),
-                    "score": round(base_w * len(responses), 2),
-                })
-
-    return events
+    total = round(sum(breakdown.values()), 2)
+    return total, breakdown
 
 
-def _unique_files(items: list[dict]) -> list[str]:
-    seen = []
+def is_not_public(texts: list[str], rules: dict) -> list[str]:
+    """返回匹配到的隐私红旗词列表，空表示适合公开。"""
+    red_flags = rules.get("not_public_keywords", [])
+    hits = []
+    for t in texts:
+        for kw in red_flags:
+            if kw in t and kw not in hits:
+                hits.append(kw)
+    return hits
+
+
+def unique_files(items: list[dict]) -> list[str]:
+    seen: list[str] = []
     for it in items:
         if it["file"] not in seen:
             seen.append(it["file"])
     return seen
 
 
-# ---------------------------------------------------------------------------
-# 规则 3：跨群（禁言群群主内容 -> 交流群响应）
-# ---------------------------------------------------------------------------
+# ─────────────────────────────────────────────
+# 规则 1 & 2：单群内扫描
+# ─────────────────────────────────────────────
 
-def detect_cross_group_events(
-    trigger_group_id: str,
-    trigger_label: str,
-    trigger_lines: list[dict],
-    main_group_id: str,
-    main_label: str,
-    main_lines: list[dict],
+def detect_single_group(gid: str, label: str,
+                         lines: list[dict], rules: dict) -> list[dict]:
+    events: list[dict] = []
+    share_kw   = rules.get("share_keywords", [])
+    question_kw = rules.get("question_indicators", [])
+    reaction_kw = rules.get("reaction_keywords", [])
+    window = rules.get("response_window_lines", 10)
+    min_work = rules.get("min_responses_for_work_feedback", 2)
+    min_disc = rules.get("min_responses_for_discussion", 3)
+
+    for i, item in enumerate(lines):
+        text = item["text"]
+
+        # ─ 规则 1：群友作品 ─
+        sh_hits = [k for k in share_kw if k in text]
+        if sh_hits:
+            resp = [lines[j] for j in range(i + 1, min(i + 1 + window, len(lines)))
+                    if any(k in lines[j]["text"] for k in reaction_kw)]
+            if len(resp) >= min_work:
+                all_texts = [text] + [r["text"] for r in resp]
+                red = is_not_public(all_texts, rules)
+                score, breakdown = score_event(resp, sh_hits, rules)
+                if red:
+                    breakdown["适合公开"] = 0
+                    score = round(score - rules.get("score_weights", {}).get("public_suitable", 1.0), 2)
+                events.append({
+                    "type": "member_work_feedback",
+                    "group": gid, "label": label,
+                    "trigger_line": text,
+                    "response_lines": [r["text"] for r in resp],
+                    "keywords_matched": sh_hits,
+                    "source_screens": unique_files([item] + resp),
+                    "score": max(score, 0),
+                    "score_breakdown": breakdown,
+                    "not_public_flags": red,
+                    "public_suitable": not bool(red),
+                })
+
+        # ─ 规则 2：群友话题 ─
+        q_hits = [k for k in question_kw if k in text] + (
+            ["？结尾"] if text.rstrip().endswith(("?", "？")) else []
+        )
+        if q_hits:
+            resp = [lines[j] for j in range(i + 1, min(i + 1 + window, len(lines)))
+                    if len(lines[j]["text"]) >= 4
+                    and not all(k in lines[j]["text"] for k in reaction_kw)]
+            if len(resp) >= min_disc:
+                all_texts = [text] + [r["text"] for r in resp]
+                red = is_not_public(all_texts, rules)
+                score, breakdown = score_event(resp, q_hits, rules)
+                if red:
+                    breakdown["适合公开"] = 0
+                    score = round(score - rules.get("score_weights", {}).get("public_suitable", 1.0), 2)
+                events.append({
+                    "type": "topic_discussion",
+                    "group": gid, "label": label,
+                    "trigger_line": text,
+                    "response_lines": [r["text"] for r in resp],
+                    "keywords_matched": q_hits,
+                    "source_screens": unique_files([item] + resp),
+                    "score": max(score, 0),
+                    "score_breakdown": breakdown,
+                    "not_public_flags": red,
+                    "public_suitable": not bool(red),
+                })
+
+    return events
+
+
+# ─────────────────────────────────────────────
+# 规则 3：跨群（禁言群 -> 交流群）
+# ─────────────────────────────────────────────
+
+def char_ngrams(text: str, n: int = 4) -> set[str]:
+    t = "".join(text.split())
+    return {t[i:i + n] for i in range(len(t) - n + 1)} if len(t) >= n else ({t} if t else set())
+
+
+def merge_blocks(lines: list[dict]) -> list[list[dict]]:
+    blocks: list[list[dict]] = []
+    cur: list[dict] = []
+    for item in lines:
+        if len(item["text"]) <= 3:
+            if cur:
+                blocks.append(cur)
+                cur = []
+            continue
+        cur.append(item)
+    if cur:
+        blocks.append(cur)
+    return blocks
+
+
+def detect_cross_group(
+    trig_id: str, trig_label: str, trig_lines: list[dict],
+    main_id: str, main_label: str, main_lines: list[dict],
     rules: dict,
 ) -> list[dict]:
-    events = []
-    min_len = rules.get("min_announcement_length", 20)
-    overlap_threshold = rules.get("cross_group_keyword_overlap", 2)
+    events: list[dict] = []
+    min_len   = rules.get("min_announcement_length", 20)
+    min_ol    = rules.get("cross_group_keyword_overlap", 2)
     reaction_kw = rules.get("reaction_keywords", [])
-    weights = rules.get("score_weights", {})
-    base_w = weights.get("base_response", 1.0)
-    cross_bonus = weights.get("cross_group_bonus", 2.0)
 
-    blocks = merge_into_blocks(trigger_lines)
     main_grams = [(item, char_ngrams(item["text"])) for item in main_lines]
 
-    for block in blocks:
-        block_text = "".join(item["text"] for item in block)
+    for block in merge_blocks(trig_lines):
+        block_text = "".join(it["text"] for it in block)
         if len(block_text) < min_len:
             continue
-        block_grams = char_ngrams(block_text)
-        if not block_grams:
+        bg = char_ngrams(block_text)
+        if not bg:
             continue
 
-        matches = []
-        for item, grams in main_grams:
-            overlap = len(block_grams & grams)
-            if overlap >= overlap_threshold:
-                matches.append(item)
-
+        matches = [item for item, mg in main_grams if len(bg & mg) >= min_ol]
         if not matches:
             continue
 
-        # 在匹配位置附近统计反应类回复，作为"响应强度"
-        match_indices = {id(m) for m in matches}
-        response_count = 0
-        for idx, item in enumerate(main_lines):
-            if id(item) in match_indices:
-                for j in range(idx + 1, min(idx + 4, len(main_lines))):
-                    if any(kw in main_lines[j]["text"] for kw in reaction_kw):
-                        response_count += 1
+        rc = sum(
+            1 for idx, item in enumerate(main_lines)
+            if id(item) in {id(m) for m in matches}
+            for j in range(idx + 1, min(idx + 4, len(main_lines)))
+            if any(k in main_lines[j]["text"] for k in reaction_kw)
+        )
+
+        all_texts = [it["text"] for it in block] + [m["text"] for m in matches]
+        red = is_not_public(all_texts, rules)
+        score, breakdown = score_event(matches, [], rules, is_cross=True)
+        if red:
+            breakdown["适合公开"] = 0
+            score = round(score - rules.get("score_weights", {}).get("public_suitable", 1.0), 2)
 
         events.append({
             "type": "muted_group_owner_response",
-            "group": main_group_id,
-            "label": f"{trigger_label} -> {main_label}",
-            "trigger_line": block_text[:200],
-            "response_lines": [m["text"] for m in matches][:10],
+            "group": main_id,
+            "label": f"{trig_label} → {main_label}",
+            "trigger_line": block_text[:300],
+            "response_lines": [m["text"] for m in matches][:8],
             "keywords_matched": [],
-            "source_screens": _unique_files(block + matches),
-            "score": round(base_w * (len(matches) + response_count) + cross_bonus, 2),
+            "source_screens": unique_files(block + matches),
+            "score": max(score, 0),
+            "score_breakdown": breakdown,
+            "not_public_flags": red,
+            "public_suitable": not bool(red),
         })
 
     return events
 
 
-# ---------------------------------------------------------------------------
+# ─────────────────────────────────────────────
 # 输出
-# ---------------------------------------------------------------------------
+# ─────────────────────────────────────────────
 
 def write_outputs(week: str, events: list[dict]) -> None:
     by_type: dict[str, list[dict]] = {}
     for e in events:
         by_type.setdefault(e["type"], []).append(e)
-    for evs in by_type.values():
-        evs.sort(key=lambda e: e["score"], reverse=True)
+    for ev_list in by_type.values():
+        ev_list.sort(key=lambda x: x["score"], reverse=True)
 
-    # event_scores.json
+    # ── event_scores.json ──
     scored = []
-    for type_key, evs in by_type.items():
-        for i, e in enumerate(evs, start=1):
-            e_with_id = {"id": f"{e['group']}-{type_key}-{i:03d}", **e}
-            scored.append(e_with_id)
+    for tkey, ev_list in by_type.items():
+        for i, e in enumerate(ev_list, 1):
+            scored.append({"id": f"{e['group']}-{tkey}-{i:03d}", **e})
 
-    summary = {
-        "total_candidates": len(scored),
-        "by_type": {k: len(v) for k, v in by_type.items()},
-    }
     common.write_json(common.event_scores_path(week), {
         "week": week,
         "generated_at": common.now_iso(),
-        "summary": summary,
+        "summary": {
+            "total": len(scored),
+            "by_type": {k: len(v) for k, v in by_type.items()},
+        },
         "events": scored,
     })
 
-    # candidate_events.md
+    # ── candidate_events.md ──
+    total = len(scored)
     lines = [
         f"# 候选高光事件 · {week}",
         "",
-        "> 以下为规则筛选结果，不是最终结论。下一步：把本文件和 inbox 素材一起交给 "
-        "Claude/GPT，按 `prompts/01-extract.md` 做 A/B/C 精筛。",
+        "> 以下由规则筛选自动生成，不是最终结论。",
+        "> **下一步**：把本文件交给 Claude，配合 `prompts/01-extract.md` 做 A/B/C 精筛。",
         "",
-        f"共 {summary['total_candidates']} 条候选："
-        + " / ".join(f"{TYPE_LABELS.get(k, k)} {v}" for k, v in summary["by_type"].items()),
+        f"共 **{total}** 条候选：" +
+        " / ".join(f"{TYPE_CN.get(k, k)} {len(v)}" for k, v in by_type.items()),
+        "",
+        "---",
         "",
     ]
 
-    for type_key, label in TYPE_LABELS.items():
-        evs = by_type.get(type_key, [])
-        lines.append(f"## {label}（{len(evs)}）")
-        lines.append("")
-        if not evs:
-            lines.append("（本周无候选）")
-            lines.append("")
+    for tkey, cn_label in TYPE_CN.items():
+        ev_list = by_type.get(tkey, [])
+        lines += [f"## {cn_label}（{len(ev_list)} 条）", ""]
+        if not ev_list:
+            lines += ["（本周无候选）", ""]
             continue
-        for i, e in enumerate(evs, start=1):
-            lines.append(f"### [{e['group']}-{type_key}-{i:03d}] 分数 {e['score']} · {e['label']}")
-            lines.append(f"- 触发内容：「{e['trigger_line']}」")
+
+        for i, e in enumerate(ev_list, 1):
+            eid = f"{e['group']}-{tkey}-{i:03d}"
+            pub_tag = "✅ 适合公开" if e.get("public_suitable", True) else f"⚠️ 不建议公开（{', '.join(e.get('not_public_flags', []))}）"
+            bd_str = " | ".join(f"{k} {v}" for k, v in e.get("score_breakdown", {}).items())
+
+            lines += [
+                f"### [{eid}] 总分 {e['score']:.1f}",
+                f"- **类型**：{TYPE_CN.get(tkey, tkey)}",
+                f"- **群组**：{e['label']}",
+                f"- **触发内容**：「{e['trigger_line'][:120]}」",
+            ]
             if e["response_lines"]:
-                lines.append(f"- 后续/响应（{len(e['response_lines'])} 条）：")
-                for r in e["response_lines"]:
-                    lines.append(f"  - 「{r}」")
-            if e["keywords_matched"]:
-                lines.append(f"- 命中关键词：{', '.join(e['keywords_matched'])}")
-            lines.append(f"- 截图来源：{', '.join(e['source_screens'])}")
-            lines.append("")
+                lines.append(f"- **后续响应**（{len(e['response_lines'])} 条）：")
+                for r in e["response_lines"][:5]:
+                    lines.append(f"  - 「{r[:80]}」")
+            if e.get("keywords_matched"):
+                lines.append(f"- **命中关键词**：{', '.join(e['keywords_matched'])}")
+            lines += [
+                f"- **评分明细**：{bd_str}",
+                f"- **适合公开**：{pub_tag}",
+                f"- **截图来源**：{', '.join(e['source_screens'][:4])}",
+                "",
+            ]
+
+    lines += [
+        "---",
+        "",
+        "## 下一步",
+        "",
+        "把本文件 + 本周 `inbox/` 素材一起发给 Claude，",
+        "用 `prompts/01-extract.md` 做 A/B/C 精筛，",
+        "再依次跑 02~06 生成周刊/短版/知识沉淀/下周计划。",
+    ]
 
     common.candidate_events_path(week).write_text("\n".join(lines), encoding="utf-8")
 
 
+# ─────────────────────────────────────────────
+# main
+# ─────────────────────────────────────────────
+
 def main(argv=None) -> int:
     args = parse_args(argv)
     config = common.load_config(Path(args.config))
-    rules = common.load_rules(Path(args.rules))
-    week = args.week
+    rules  = common.load_rules(Path(args.rules))
+    week   = args.week
 
     manifest = common.load_manifest(week)
-    if not manifest.get("groups"):
-        print(f"[错误] {common.manifest_path(week)} 里没有任何分组/截图记录，请先运行 wechat_capture_bot.py 和 ocr_extract.py。", file=sys.stderr)
-        return 1
+    cache    = common.load_json(common.ocr_cache_path(week), default={})
 
-    cache = common.load_json(common.ocr_cache_path(week), default={})
     if not cache:
-        print(f"[错误] {common.ocr_cache_path(week)} 为空，请先运行 ocr_extract.py。", file=sys.stderr)
-        return 1
+        print("[警告] ocr_cache.json 为空，所有截图文字为空，候选事件可能为 0。")
+        print("  先运行：python src/ocr_extract.py --week", week)
 
-    streams = build_line_streams(manifest, cache)
-
+    streams   = build_streams(manifest, cache)
     group_meta = {g["id"]: g for g in config.get("groups", [])}
     events: list[dict] = []
 
-    for group_id, lines in streams.items():
-        meta = group_meta.get(group_id, {})
-        label = f"{meta.get('name', group_id)}（{meta.get('role', '')}）"
-        events += detect_in_group_events(group_id, label, lines, rules)
+    # 单群规则
+    for gid, lines in streams.items():
+        meta  = group_meta.get(gid, {})
+        label = f"{meta.get('name', gid)}（{meta.get('role', '')}）"
+        events += detect_single_group(gid, label, lines, rules)
 
-    # 跨群规则：muted 群 -> 非 muted 群
-    muted_groups = [g for g in config.get("groups", []) if g.get("muted")]
-    main_groups = [g for g in config.get("groups", []) if not g.get("muted")]
-    for trigger_g in muted_groups:
-        for main_g in main_groups:
-            t_id, m_id = trigger_g["id"], main_g["id"]
-            if t_id not in streams or m_id not in streams:
+    # 跨群规则
+    muted = [g for g in config.get("groups", []) if g.get("muted")]
+    mains = [g for g in config.get("groups", []) if not g.get("muted")]
+    for tg in muted:
+        for mg in mains:
+            tid, mid = tg["id"], mg["id"]
+            if tid not in streams or mid not in streams:
                 continue
-            events += detect_cross_group_events(
-                t_id, f"{trigger_g['name']}（{trigger_g.get('role','')}）", streams[t_id],
-                m_id, f"{main_g['name']}（{main_g.get('role','')}）", streams[m_id],
+            events += detect_cross_group(
+                tid, f"{tg['name']}（{tg.get('role', '')}）", streams[tid],
+                mid, f"{mg['name']}（{mg.get('role', '')}）", streams[mid],
                 rules,
             )
 
     write_outputs(week, events)
 
-    print(f"完成：共发现 {len(events)} 条候选高光事件。")
-    print(f"输出：{common.candidate_events_path(week)}")
-    print(f"输出：{common.event_scores_path(week)}")
-    print("下一步：把 candidate_events.md 和本周 inbox 素材一起交给 Claude/GPT，用 prompts/01-extract.md 精筛。")
+    print(f"✅ 规则检测完成：{len(events)} 条候选高光")
+    print(f"   candidate_events.md -> {common.candidate_events_path(week)}")
+    print(f"   event_scores.json   -> {common.event_scores_path(week)}")
+    if events:
+        print(f"\n下一步：把 candidate_events.md 交给 Claude，用 prompts/01-extract.md 精筛。")
     return 0
 
 

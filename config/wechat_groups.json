@@ -1,26 +1,19 @@
 {
   "device": {
-    "_comment": "adb 可执行文件优先级：本字段 > tools/platform-tools/adb(.exe) > 系统 PATH 中的 adb",
     "adb_path": "tools/platform-tools/adb.exe",
     "serial": null
   },
 
   "capture": {
     "week": "2026-W24",
-    "date_range": {
-      "start": "2026-06-08",
-      "end": "2026-06-14"
-    },
+    "date_range": { "start": "2026-06-08", "end": "2026-06-14" },
     "backfill_dates": ["2026-06-07"],
-
     "max_screens_per_group": 200,
     "scroll_delay_seconds": 1.0,
     "duplicate_stop_threshold": 3,
-
     "swipe": {
-      "_comment": "坐标按屏幕宽高的比例计算，from -> to 模拟手指滑动方向",
       "from": [0.5, 0.80],
-      "to": [0.5, 0.30],
+      "to":   [0.5, 0.30],
       "duration_ms": 300
     }
   },
@@ -35,7 +28,7 @@
     },
     {
       "id": "trigger",
-      "name": "IP大大大群",
+      "name": "【禁言ing】IP大大大群",
       "role": "触发源群",
       "muted": true,
       "enabled": true
@@ -43,7 +36,6 @@
   ],
 
   "ocr": {
-    "_comment": "tesseract_cmd 留空表示使用 PATH 中的 tesseract；lang 需要安装对应语言包，中文简体为 chi_sim",
     "tesseract_cmd": null,
     "lang": "chi_sim+eng"
   }

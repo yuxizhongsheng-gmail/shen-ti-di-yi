@@ -1,0 +1,329 @@
+{
+  "week": "2026-W24",
+  "generated_at": "2026-06-16T08:10:08+00:00",
+  "summary": {
+    "total": 10,
+    "by_type": {
+      "member_work_feedback": 4,
+      "topic_discussion": 5,
+      "muted_group_owner_response": 1
+    }
+  },
+  "events": [
+    {
+      "id": "main-member_work_feedback-001",
+      "type": "member_work_feedback",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "李晓晴: 分享一下我刚发布的账号主页截图，最近更新了3篇文章，大家帮看看风格",
+      "response_lines": [
+        "陈明远: 哇这个风格好实用！学到了",
+        "张小雨: 太强了！求链接",
+        "沈佳颖: 已收藏，棒！",
+        "王大海: 赞，这个排版方式我也想试试"
+      ],
+      "keywords_matched": [
+        "分享",
+        "刚发布",
+        "更新了",
+        "文章",
+        "账号",
+        "主页"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0001.png"
+      ],
+      "score": 6.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 2.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-member_work_feedback-002",
+      "type": "member_work_feedback",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "小红书IP运营助手",
+      "response_lines": [
+        "陈明远: 哇这个风格好实用！学到了",
+        "张小雨: 太强了！求链接",
+        "沈佳颖: 已收藏，棒！",
+        "王大海: 赞，这个排版方式我也想试试"
+      ],
+      "keywords_matched": [
+        "小红书"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0001.png"
+      ],
+      "score": 5.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 1.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-member_work_feedback-003",
+      "type": "member_work_feedback",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "群主-陈老师: @所有人 本周话题：你们觉得小红书笔记封面怎么设计最吸引人？",
+      "response_lines": [
+        "朱晓明: +1，我也在研究这个问题",
+        "刘伟伟: 纯文字封面我试了，数据不太好",
+        "赵天阳: 刚看到IP大大大群里说的那个\"内容矩阵搭建\"方法，可以照做吗？",
+        "周静怡: 追问一下，是矩阵搭建那个分享吗"
+      ],
+      "keywords_matched": [
+        "小红书"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0002.png",
+        "inbox/adb_captures/2026-W24/main/0003.png"
+      ],
+      "score": 5.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 1.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-member_work_feedback-004",
+      "type": "member_work_feedback",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "周静怡: 追问一下，是矩阵搭建那个分享吗",
+      "response_lines": [
+        "林海涛: 已截图了，太有用了！",
+        "高燕芳: 我也mark了，绝了"
+      ],
+      "keywords_matched": [
+        "分享"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0003.png"
+      ],
+      "score": 5.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 1.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-topic_discussion-001",
+      "type": "topic_discussion",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "群主-陈老师: @所有人 本周话题：你们觉得小红书笔记封面怎么设计最吸引人？",
+      "response_lines": [
+        "早 9:00",
+        "林晨曦: 这个怎么做？我一直不太会",
+        "陈小丽: 我觉得要突出人物，大家觉得呢？",
+        "朱晓明: +1，我也在研究这个问题",
+        "余菲菲: 有没有人试过纯文字封面的？效果怎么样",
+        "刘伟伟: 纯文字封面我试了，数据不太好",
+        "🌲25IP训练营交流群",
+        "赵天阳: 刚看到IP大大大群里说的那个\"内容矩阵搭建\"方法，可以照做吗？",
+        "下午 2:15",
+        "周静怡: 追问一下，是矩阵搭建那个分享吗"
+      ],
+      "keywords_matched": [
+        "？",
+        "怎么",
+        "？结尾"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0002.png",
+        "inbox/adb_captures/2026-W24/main/0003.png"
+      ],
+      "score": 6.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 2.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-topic_discussion-002",
+      "type": "topic_discussion",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "林晨曦: 这个怎么做？我一直不太会",
+      "response_lines": [
+        "陈小丽: 我觉得要突出人物，大家觉得呢？",
+        "朱晓明: +1，我也在研究这个问题",
+        "余菲菲: 有没有人试过纯文字封面的？效果怎么样",
+        "刘伟伟: 纯文字封面我试了，数据不太好",
+        "🌲25IP训练营交流群",
+        "赵天阳: 刚看到IP大大大群里说的那个\"内容矩阵搭建\"方法，可以照做吗？",
+        "下午 2:15",
+        "周静怡: 追问一下，是矩阵搭建那个分享吗",
+        "林海涛: 已截图了，太有用了！",
+        "高燕芳: 我也mark了，绝了"
+      ],
+      "keywords_matched": [
+        "？",
+        "怎么"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0002.png",
+        "inbox/adb_captures/2026-W24/main/0003.png"
+      ],
+      "score": 6.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 2.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-topic_discussion-003",
+      "type": "topic_discussion",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "陈小丽: 我觉得要突出人物，大家觉得呢？",
+      "response_lines": [
+        "朱晓明: +1，我也在研究这个问题",
+        "余菲菲: 有没有人试过纯文字封面的？效果怎么样",
+        "刘伟伟: 纯文字封面我试了，数据不太好",
+        "🌲25IP训练营交流群",
+        "赵天阳: 刚看到IP大大大群里说的那个\"内容矩阵搭建\"方法，可以照做吗？",
+        "下午 2:15",
+        "周静怡: 追问一下，是矩阵搭建那个分享吗",
+        "林海涛: 已截图了，太有用了！",
+        "高燕芳: 我也mark了，绝了"
+      ],
+      "keywords_matched": [
+        "？",
+        "大家觉得",
+        "？结尾"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0002.png",
+        "inbox/adb_captures/2026-W24/main/0003.png"
+      ],
+      "score": 6.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 2.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-topic_discussion-004",
+      "type": "topic_discussion",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "余菲菲: 有没有人试过纯文字封面的？效果怎么样",
+      "response_lines": [
+        "刘伟伟: 纯文字封面我试了，数据不太好",
+        "🌲25IP训练营交流群",
+        "赵天阳: 刚看到IP大大大群里说的那个\"内容矩阵搭建\"方法，可以照做吗？",
+        "下午 2:15",
+        "周静怡: 追问一下，是矩阵搭建那个分享吗",
+        "林海涛: 已截图了，太有用了！",
+        "高燕芳: 我也mark了，绝了"
+      ],
+      "keywords_matched": [
+        "？",
+        "怎么",
+        "有没有人",
+        "有没有"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0002.png",
+        "inbox/adb_captures/2026-W24/main/0003.png"
+      ],
+      "score": 6.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 2.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-topic_discussion-005",
+      "type": "topic_discussion",
+      "group": "main",
+      "label": "🌲25IP训练营交流群（主群）",
+      "trigger_line": "赵天阳: 刚看到IP大大大群里说的那个\"内容矩阵搭建\"方法，可以照做吗？",
+      "response_lines": [
+        "下午 2:15",
+        "周静怡: 追问一下，是矩阵搭建那个分享吗",
+        "林海涛: 已截图了，太有用了！",
+        "高燕芳: 我也mark了，绝了"
+      ],
+      "keywords_matched": [
+        "？",
+        "？结尾"
+      ],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/main/0003.png"
+      ],
+      "score": 6.5,
+      "score_breakdown": {
+        "多人响应": 2.0,
+        "有触发点": 2.0,
+        "反馈质量": 1.5,
+        "适合公开": 1.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    },
+    {
+      "id": "main-muted_group_owner_response-001",
+      "type": "muted_group_owner_response",
+      "group": "main",
+      "label": "【禁言ing】IP大大大群（触发源群） → 🌲25IP训练营交流群（主群）",
+      "trigger_line": "【禁言ing】IP大大大群@所有人 今天分享一个「内容矩阵搭建」的实战复盘这是我做IP两年总结出来的方法论主理人 IP教练下午 1:30本周重点：内容矩阵搭建，建议大家收藏【禁言ing】IP大大大群主理人 IP教练: 内容矩阵搭建分为三步：定位、批量、复用这套方法我已经用了两年，效果很好下午 1:35",
+      "response_lines": [
+        "赵天阳: 刚看到IP大大大群里说的那个\"内容矩阵搭建\"方法，可以照做吗？"
+      ],
+      "keywords_matched": [],
+      "source_screens": [
+        "inbox/adb_captures/2026-W24/trigger/0001.png",
+        "inbox/adb_captures/2026-W24/trigger/0002.png",
+        "inbox/adb_captures/2026-W24/main/0003.png"
+      ],
+      "score": 4.5,
+      "score_breakdown": {
+        "多人响应": 1.0,
+        "有触发点": 0.0,
+        "反馈质量": 0.5,
+        "适合公开": 1.0,
+        "跨群加成": 2.0
+      },
+      "not_public_flags": [],
+      "public_suitable": true
+    }
+  ]
+}

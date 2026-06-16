@@ -1,0 +1,55 @@
+{
+  "week": "2026-W24",
+  "scanned_at": "2026-06-16T08:08:45+00:00",
+  "source_dir": "inbox/adb_captures/2026-W24",
+  "groups": {
+    "main": {
+      "name": "🌲25IP训练营交流群",
+      "role": "主群",
+      "muted": false,
+      "status": "ready",
+      "screens": [
+        {
+          "index": 1,
+          "file": "inbox/adb_captures/2026-W24/main/0001.png",
+          "sha256": "f7b92cbcf5414ec9f12e50806f7d63db6506812d45bc08444ca12a717efcc19b",
+          "captured_at": "2026-06-16T08:08:45+00:00"
+        },
+        {
+          "index": 2,
+          "file": "inbox/adb_captures/2026-W24/main/0002.png",
+          "sha256": "7711fc69052ed19c96d189960fe04438ab645edde4c3a88d08fc43831909f51b",
+          "captured_at": "2026-06-16T08:08:45+00:00"
+        },
+        {
+          "index": 3,
+          "file": "inbox/adb_captures/2026-W24/main/0003.png",
+          "sha256": "e03a734b19d8571cae7369df3a9d113b965d8ef396b43ee869c78c791f79c999",
+          "captured_at": "2026-06-16T08:08:45+00:00"
+        }
+      ],
+      "backfills": {}
+    },
+    "trigger": {
+      "name": "【禁言ing】IP大大大群",
+      "role": "触发源群",
+      "muted": true,
+      "status": "ready",
+      "screens": [
+        {
+          "index": 1,
+          "file": "inbox/adb_captures/2026-W24/trigger/0001.png",
+          "sha256": "52c1b0da08b649f2b0c1d3a2340e55352a292dad587f606e520a32192d7e1f7d",
+          "captured_at": "2026-06-16T08:08:45+00:00"
+        },
+        {
+          "index": 2,
+          "file": "inbox/adb_captures/2026-W24/trigger/0002.png",
+          "sha256": "be7ddf3ea19c81ef6d120e903d703dfe1117a098e88974e42b4db77687c96387",
+          "captured_at": "2026-06-16T08:08:45+00:00"
+        }
+      ],
+      "backfills": {}
+    }
+  }
+}

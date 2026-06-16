@@ -110,6 +110,28 @@ A 级每周 3-6 条足够，宁缺毋滥——这是整个工作流里最重要�
 
 ## 素材采集自动化（wechat_capture_bot）
 
+### 最快路径：手动截图 → 一键生成候选事件
+
+不需要 ADB、不需要接手机，只要你能把截图文件复制到这里：
+
+```
+inbox/adb_captures/2026-W24/main/     ← 主群截图（按时间顺序，0001.png 0002.png …）
+inbox/adb_captures/2026-W24/trigger/  ← 触发源群截图（可选）
+```
+
+然后运行：
+
+```powershell
+.\scripts\build_candidate_events.ps1 -Week 2026-W24
+```
+
+输出：`runs/2026-W24/candidate_events.md`（候选高光，交给 Claude/GPT 做精筛）。
+
+> 如果没有安装 Tesseract OCR，第一次运行会生成 `runs/2026-W24/manual_ocr_template.md`，
+> 在里面手动填写截图里的聊天文字，然后重新运行脚本即可。
+
+---
+
 第一版工作流里，「填 inbox」完全靠手动复制粘贴——这一步最累，也最容易让人放弃。`src/` 下的本地 Bot 把这一步自动化到「截图 + OCR + 规则初筛」，产出候选高光，但**判断哪些真正值得写进周刊，仍然交给人和 AI**。
 
 ### 为什么不用电脑微信记录
