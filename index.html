@@ -6,11 +6,10 @@
 <meta name="format-detection" content="telephone=no, email=no">
 <title>爸，父亲节快乐</title>
 
-<!-- 微信 / 社交分享预览卡片（每次交付时按该订单的 CONFIG 手动替换以下三项）-->
-<meta name="description" content="一份只属于他的父亲节礼物——写给爸爸的信、家庭回忆与心意，点开即是惊喜。">
+<meta name="description" content="这是我送给爸爸的父亲节礼物。">
 <meta property="og:title" content="爸，父亲节快乐">
-<meta property="og:description" content="一份只属于他的父亲节礼物，点开看看吧。">
-<meta property="og:image" content="https://picsum.photos/seed/fatherday-share/600/400">
+<meta property="og:description" content="这是一封写给爸爸的信，点开看看。">
+<meta property="og:image" content="">
 
 <!-- 浏览器标签页图标 -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E">
@@ -21,84 +20,46 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
 
 <script>
-/* ================================================================
-   CONFIG — 只改这里，整个页面跟着变
-   plan: "basic"   → 9.9 纯文字版
-   plan: "premium" → 19.9 全功能版
-
-   提示：可以用 customize.html 填写表单自动生成本文件，
-   不需要手动改这里。下面两行标记是生成器的定位锚点，请勿删除。
-================================================================ */
 /* CONFIG-START */
 const CONFIG = {
   plan: "premium",
 
   fatherName:      "爸爸",
-  childName:       "小明",
-  childBirthYear:  2002,
+  childName:       "你的孩子",
+  childBirthYear:  2007,
   date:            "2026年6月21日",
 
-  openingQuote: "有些话，我一直藏在心里很多年。今天，我想说出来。",
+  openingQuote: "爸，有些话我说不出口。但它们一直都在。",
 
-  keywords: ["沉默", "责任", "撑家", "不善言辞", "山一样的人"],
+  keywords: ["沉默", "扛着", "距离", "原来如此", "我懂了"],
 
   letter: {
-    p1: "小时候我总觉得你是个严肃的人。你很少开口，但家里的每一件事你都记着——电费涨了你知道，我成绩单来了你知道，我鞋子小了你也知道。只是那时我太小，读不懂沉默里藏着多少话。",
-    p2: "后来我离开家去读书，才慢慢明白，你给我的那些东西没有一件是买得到的。是你骑着车送我上学的那条路，是你半夜起来给我盖被子的那只手，是你从来不说「我爱你」，却把所有好的都留给我的那种方式。",
-    p3: "我知道我不是一个经常说谢谢的孩子。有时候我甚至不接你的电话，还嫌你唠叨。但我想让你知道，你做的每一件事，我都记得，一件都没忘。以后我会更常联系你，也会努力成为让你骄傲的人。",
-    p4: "今年父亲节，我没有办法陪在你身边，但我希望你能感受到这几个字：爸，你辛苦了，谢谢你，我很爱你。往后的日子，请你多爱惜自己。",
+    p1: "我们好像从来都不怎么聊天。你回到家，我在房间里；你吃饭的时候，我在玩手机。偶尔在走廊碰到，也只是彼此看一眼，连一句「今天怎么样」都省了。我不知道从什么时候开始，我们之间就变成了这样——住在同一个屋檐下，却好像隔着什么。",
+    p2: "以前不懂事的时候，我怨过你。怨你话少，怨你不够温柔，怨你好像永远在忙自己的事。可是后来我慢慢长大了，开始明白，每个人都有每个人的困境。你选择扛起这个家，选择了沉默，不是因为你不在乎——是你把所有的力气都用来撑着我们脚下的地面，没有多余的手来拥抱了。你做的那些选择，都有你的原因。这件事，我花了十九年才看懂。",
+    p3: "我很少跟你说谢谢。不是不想说，是真的不知道怎么开口。十九年了，你给我的那些东西，我一样都没有忘。你不说爱，但你一直在——这件事本身，就已经是最重的话了。",
+    p4: "爸，父亲节快乐。我不太会说漂亮话，但这句是真的：我爱你。我知道你也爱我。我们不用说出来也没关系。但今天，就这一次，我想让你知道。",
   },
 
-  sendMessage: "爸，父亲节快乐。这些年辛苦了，谢谢你。我爱你。",
+  sendMessage: "爸，父亲节快乐🌾 这个链接是我做给你的，你点开看看。",
 
-  /* ── premium 专属 ── */
-  photos: [
-    { url: "https://picsum.photos/seed/fam1/480/480", caption: "那年夏天" },
-    { url: "https://picsum.photos/seed/fam2/480/480", caption: "我们家" },
-    { url: "https://picsum.photos/seed/fam3/480/480", caption: "最喜欢这张" },
-    { url: "https://picsum.photos/seed/fam4/480/480", caption: "在一起" },
-  ],
+  photos: [],
 
   timeline: [
-    { year: "2002", text: "我来到这个世界，你第一次当爸爸" },
-    { year: "2009", text: "你每天骑车送我上小学，从没迟到过一次" },
-    { year: "2015", text: "我考上初中，你悄悄红了眼眶" },
-    { year: "2020", text: "我第一次离家，你塞给我一个红包，什么都没说" },
-    { year: "2026", text: "今天，我想好好谢谢你" },
+    { year: "2007", text: "我来到了你的世界，你当上了爸爸" },
+    { year: "2013", text: "你送我上小学。那时候我嫌你话少，觉得别人家的爸爸都比你好" },
+    { year: "2019", text: "我开始有了自己的世界，跟你说的话越来越少。你也不追问" },
+    { year: "2023", text: "我开始理解你了。原来大人的世界，远比我想象的难" },
+    { year: "2026", text: "我 19 岁了。我想好好跟你说一次：爸，谢谢你" },
   ],
 
-  restorationBefore: "https://picsum.photos/seed/oldb/400/520",
-  restorationAfter:  "https://picsum.photos/seed/newa/400/520",
+  restorationBefore: "",
+  restorationAfter:  "",
 
   audioUrl:   "",
   bgMusicUrl: "",
-  voiceText:  "爸，这些文字我写了又删，删了又写，最后还是想亲口跟你说一句：父亲节快乐。这些年辛苦你了，我都记在心里。",
+  voiceText:  "爸，父亲节快乐。这些年你辛苦了。我不太会表达，但我想让你知道——我爱你。谢谢你一直在。",
 
-  /* ── 父亲节礼物：一杯酒（premium 专属）── */
-  product: {
-    badge:    "父 亲 节 限 定",
-    name:     "父 愛 · 珍 藏",
-    brand:    "53° 酱香纯粮 · 三年窖藏",
-    tagline:  "中国父子之间，说不出的话，一杯酒就够了。",
-    image:    "https://picsum.photos/seed/fatherwine/600/800",
-
-    features: [
-      "酒标可定制：刻上爸爸的名字与你的祝福",
-      "礼盒附赠手写信卡，与这份网页一同送达",
-      "53°酱香纯粮，三年窖藏，口感绵柔不上头",
-      "顺丰包邮，父亲节前必达",
-      "每日限量发出，售完即止",
-    ],
-
-    price:         199,
-    originalPrice: 399,
-
-    stock:    37,
-    deadline: "2026-06-21T23:59:59+08:00",
-
-    ctaText: "为爸爸订一瓶",
-    ctaUrl:  "#",
-  },
+  product: null,
 };
 /* CONFIG-END */
 </script>
@@ -1161,8 +1122,9 @@ body {
     }
     buildWaveform();
 
-    /* 产品区（一杯酒） */
+    /* 产品区 */
     if (C.product) initProduct(C.product);
+    else document.getElementById('product-sec').style.display = 'none';
   }
 
   spawnPetals();
