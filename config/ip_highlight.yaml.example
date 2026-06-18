@@ -1,0 +1,76 @@
+# IP 群高光 Day 1 Bot 配置
+# 复制为 config/ip_highlight.yaml 并按需修改
+
+week: "2026-W25"
+main_group: "25IP训练营交流群"
+
+# ── 截图采集 ──
+capture:
+  screenshot_count: 80
+  delay_seconds: 0.8
+  swipe:
+    from_x: 0.5
+    from_y: 0.75
+    to_x: 0.5
+    to_y: 0.25
+    duration_ms: 300
+
+# ── ADB 设备 ──
+device:
+  adb_path: null          # null = 自动寻找（tools/platform-tools/adb.exe 或系统 PATH）
+  serial: null            # null = 自动检测；多设备时填写序列号
+
+# ── OCR ──
+ocr:
+  tesseract_cmd: null     # null = 系统 PATH 中的 tesseract
+  lang: "chi_sim+eng"
+
+# ── 高光关键词 ──
+highlight_keywords:
+  - IP
+  - 定位
+  - 朋友圈
+  - 成交
+  - 流量
+  - 内容
+  - 复盘
+  - 私域
+  - 产品
+  - 用户
+  - 变现
+  - 案例
+  - 选题
+  - 认知
+  - 方法
+  - 训练营
+  - 小红书
+  - 抖音
+  - 账号
+
+# ── 回应词 ──
+response_keywords:
+  - 对
+  - 确实
+  - 学到了
+  - 有用
+  - 展开讲讲
+  - 我也是
+  - 赞
+  - 牛
+  - 可以
+  - 这个很重要
+  - 原来如此
+  - 收藏
+
+# ── 热度评分权重 ──
+scoring:
+  text_length_weight: 1.0
+  keyword_weight: 3.0
+  question_weight: 2.0
+  long_text_weight: 1.5
+  response_weight: 2.0
+  continuity_bonus: 1.5
+
+# ── 阈值 ──
+candidate_threshold: 50        # 热度分 >= 此值进入 candidate_events.md
+must_review_threshold: 70      # 热度分 >= 此值标记为 must-review
