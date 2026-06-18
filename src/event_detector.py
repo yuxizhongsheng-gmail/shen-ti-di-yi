@@ -121,6 +121,60 @@ def unique_files(items: list[dict]) -> list[str]:
 
 
 # ─────────────────────────────────────────────
+# 噪音行过滤
+# ─────────────────────────────────────────────
+
+import re as _re
+
+_NOISE_PATTERNS = [
+    _re.compile(r"^[上下]午?\s*\d{1,2}:\d{2}$"),
+    _re.compile(r"^早\s*\d{1,2}:\d{2}$"),
+    _re.compile(r"^周[一二三四五六日]\s*(早|上午|下午|晚)?\s*\d{1,2}:\d{2}$"),
+    _re.compile(r"^\d{1,2}:\d{2}$"),
+    _re.compile(r"^\d{4}年\d{1,2}月\d{1,2}日"),
+    _re.compile(r"^[\U0001f300-\U0001f9ff].*训练营.*群$"),
+    _re.compile(r"^【.*】.*群$"),
+]
+
+
+def is_noise_line(text: str) -> bool:
+    t = text.strip()
+    if len(t) <= 3:
+        return True
+    return any(p.match(t) for p in _NOISE_PATTERNS)
+
+
+# ─────────────────────────────────────────────
+# 去重：同一段对话只保留最高分候选
+# ─────────────────────────────────────────────
+
+def _response_overlap(a: list[str], b: list[str]) -> float:
+    if not a or not b:
+        return 0.0
+    sa, sb = set(a), set(b)
+    inter = len(sa & sb)
+    return inter / min(len(sa), len(sb))
+
+
+def deduplicate_events(events: list[dict], overlap_threshold: float = 0.5) -> list[dict]:
+    if not events:
+        return events
+    events.sort(key=lambda e: e["score"], reverse=True)
+    kept: list[dict] = []
+    for e in events:
+        is_dup = False
+        for k in kept:
+            if e["type"] != k["type"]:
+                continue
+            if _response_overlap(e["response_lines"], k["response_lines"]) >= overlap_threshold:
+                is_dup = True
+                break
+        if not is_dup:
+            kept.append(e)
+    return kept
+
+
+# ─────────────────────────────────────────────
 # 规则 1 & 2：单群内扫描
 # ─────────────────────────────────────────────
 
@@ -137,11 +191,15 @@ def detect_single_group(gid: str, label: str,
     for i, item in enumerate(lines):
         text = item["text"]
 
+        if is_noise_line(text):
+            continue
+
         # ─ 规则 1：群友作品 ─
         sh_hits = [k for k in share_kw if k in text]
         if sh_hits:
             resp = [lines[j] for j in range(i + 1, min(i + 1 + window, len(lines)))
-                    if any(k in lines[j]["text"] for k in reaction_kw)]
+                    if not is_noise_line(lines[j]["text"])
+                    and any(k in lines[j]["text"] for k in reaction_kw)]
             if len(resp) >= min_work:
                 all_texts = [text] + [r["text"] for r in resp]
                 red = is_not_public(all_texts, rules)
@@ -168,7 +226,8 @@ def detect_single_group(gid: str, label: str,
         )
         if q_hits:
             resp = [lines[j] for j in range(i + 1, min(i + 1 + window, len(lines)))
-                    if len(lines[j]["text"]) >= 4
+                    if not is_noise_line(lines[j]["text"])
+                    and len(lines[j]["text"]) >= 4
                     and not all(k in lines[j]["text"] for k in reaction_kw)]
             if len(resp) >= min_disc:
                 all_texts = [text] + [r["text"] for r in resp]
@@ -398,6 +457,11 @@ def main(argv=None) -> int:
                 mid, f"{mg['name']}（{mg.get('role', '')}）", streams[mid],
                 rules,
             )
+
+    raw_count = len(events)
+    events = deduplicate_events(events)
+    if raw_count != len(events):
+        print(f"  去重：{raw_count} → {len(events)} 条（合并了重叠对话窗口）")
 
     write_outputs(week, events)
 
