@@ -42,7 +42,9 @@ def inline(t):
 
 # ---------- 组装正文 ----------
 body_html = []
-for label, name, paras in sections:
+toc_rows = []
+for idx, (label, name, paras) in enumerate(sections):
+    sec_id = f"sec{idx}"
     is_chapter = label.startswith("第")
     # 章名打散加字距用 label 原样；前言/后记把两字拉开
     disp_label = label if is_chapter else "　".join(list(label))
@@ -56,9 +58,16 @@ for label, name, paras in sections:
     for i, p in enumerate(paras):
         cls = ' class="first"' if i == 0 else ''
         ps.append(f'<p{cls}>{inline(p)}</p>')
-    body_html.append(f'<section class="chapter">\n{chr(10).join(head)}\n{chr(10).join(ps)}\n</section>')
+    body_html.append(f'<section class="chapter" id="{sec_id}">\n{chr(10).join(head)}\n{chr(10).join(ps)}\n</section>')
+    # 目录项：前言/后记只显二字；章显 “第N章 · 章名”
+    if is_chapter and name:
+        toc_txt = f'<span class="tl">{html.escape(label)}</span>　{html.escape(name)}'
+    else:
+        toc_txt = f'<span class="tl">{html.escape(disp_label)}</span>'
+    toc_rows.append(f'<li><a href="#{sec_id}">{toc_txt}</a></li>')
 
 BODY = "\n".join(body_html)
+TOC = '<nav class="toc"><div class="toc-h">目　录</div><ul>\n' + "\n".join(toc_rows) + '\n</ul></nav>'
 
 # ---------- 模板 ----------
 DOC = f"""<!doctype html>
@@ -133,6 +142,20 @@ p {{ margin: 0; text-indent: 2em; orphans: 2; widows: 2; }}
 p.first {{ text-indent: 0; }}
 strong {{ font-weight: 700; }}
 
+/* ---------- 目录 ---------- */
+@page toc {{ @bottom-center {{ content: none; }} }}
+.toc {{ page: toc; break-before: page; margin-top: 16mm; }}
+.toc .toc-h {{ font-family:"Noto Sans CJK SC"; font-size: 10.5pt; font-weight:500;
+  letter-spacing:.62em; text-indent:.62em; color: var(--gray); text-align:center; margin-bottom: 13mm; }}
+.toc ul {{ list-style:none; margin:0; padding:0; }}
+.toc li {{ margin: 0 0 6mm; }}
+.toc a {{ display:block; text-decoration:none; color: var(--ink);
+  font-family:"Noto Serif CJK SC"; font-size: 11pt; line-height: 1.3; }}
+.toc a .tl {{ font-family:"Noto Sans CJK SC"; font-size: 8.5pt; color: var(--gray);
+  letter-spacing:.08em; margin-right:.15em; }}
+.toc a::after {{ content: leader('.') target-counter(attr(href), page);
+  font-family:"Noto Sans CJK SC"; font-size: 9pt; color: var(--folio); }}
+
 /* ---------- 版权尾页 ---------- */
 .colophon {{ page: plain; break-before: page; height: 168mm; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#7C766B; }}
 .colophon .big {{ font-family:"Noto Serif CJK SC"; font-size: 13pt; letter-spacing:.34em; text-indent:.34em; color:#3A352F; }}
@@ -154,6 +177,8 @@ strong {{ font-weight: 700; }}
 </div>
 
 <div class="epigraph"><p>擦掉那层霜，<br>让事物，如它本来的样子，<br>显现出来。</p></div>
+
+{TOC}
 
 {BODY}
 
