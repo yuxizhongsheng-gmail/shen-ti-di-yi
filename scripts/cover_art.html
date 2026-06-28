@@ -1,0 +1,86 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  :root{
+    --paper:#F1EADB; --paper2:#EAE1CE; --ink:#1A1612; --gray:#8A8276;
+    --cinnabar:#B0392C; --seal:#9E2B25;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:640px;height:960px;overflow:hidden}
+  .cover{position:relative;width:640px;height:960px;
+    background:
+      radial-gradient(120% 80% at 30% 8%, #F6F0E3 0%, var(--paper) 42%, var(--paper2) 100%);
+    overflow:hidden;font-family:"Noto Serif CJK SC",serif}
+
+  /* 纸纹噪点 */
+  .grain{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;pointer-events:none}
+
+  /* 雾（多层柔和灰，模拟水墨霾） */
+  .mist{position:absolute;border-radius:50%;filter:blur(46px);mix-blend-mode:multiply}
+  .m1{width:560px;height:420px;right:-70px;top:60px;
+    background:radial-gradient(closest-side, rgba(110,104,94,.22), transparent 72%)}
+  .m2{width:420px;height:320px;right:30px;top:210px;
+    background:radial-gradient(closest-side, rgba(120,114,104,.16), transparent 70%)}
+  .m3{width:680px;height:300px;left:-120px;bottom:120px;
+    background:radial-gradient(closest-side, rgba(120,114,104,.13), transparent 72%)}
+
+  /* 一抹淡墨地平（雾/远水） */
+  .wash{position:absolute;right:40px;top:330px;width:430px;height:150px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(96,90,80,.18), transparent 72%);
+    filter:blur(34px);mix-blend-mode:multiply}
+  /* 朱砂红日：哑光 + 水彩晕边 */
+  .sun{position:absolute;right:98px;top:154px;width:244px;height:244px;border-radius:50%;
+    background:radial-gradient(circle at 50% 52%, #A8332A 0%, #A02E27 72%, #8F2820 100%);
+    box-shadow: inset 0 0 26px rgba(120,30,24,.30);}
+  .sun::before{content:"";position:absolute;inset:-16px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(168,51,42,.30), rgba(168,51,42,.10) 60%, transparent 78%);
+    filter:blur(9px)}            /* 水彩晕开的边 */
+  .sun::after{content:"";position:absolute;inset:0;border-radius:50%;opacity:.5;
+    background:radial-gradient(120% 120% at 70% 78%, rgba(70,16,12,.35), transparent 55%);
+    mix-blend-mode:multiply}     /* 底部稍沉，手作不均匀 */
+
+  /* 直排书名 如实所现 */
+  .title{position:absolute;left:74px;top:150px;writing-mode:vertical-rl;
+    font-weight:700;font-size:150px;line-height:1.06;color:var(--ink);
+    letter-spacing:14px;text-shadow:0 1px 0 rgba(0,0,0,.04)}
+
+  /* 版本（朱砂直排小字，贴书名右下） */
+  .edition{position:absolute;left:250px;top:638px;writing-mode:vertical-rl;
+    font-family:"Noto Sans CJK SC";font-weight:500;font-size:23px;letter-spacing:8px;color:var(--seal)}
+
+  /* 副标题列（细线，仿树林家族，但用我们的词） */
+  .sub{position:absolute;right:70px;top:470px;text-align:right;
+    font-family:"Noto Sans CJK SC";color:#5c554a;font-size:18px;letter-spacing:3px;line-height:1}
+  .sub div{padding:11px 0;border-bottom:.8px solid rgba(90,84,74,.28)}
+  .sub div:first-child{border-top:.8px solid rgba(90,84,74,.28)}
+
+  /* 作者 + 印 */
+  .author{position:absolute;left:74px;bottom:96px;
+    font-family:"Noto Sans CJK SC";font-size:30px;letter-spacing:10px;color:#2b2620}
+  .author small{font-size:19px;color:#6b6458;margin-left:6px;letter-spacing:4px}
+  .byline{position:absolute;left:76px;bottom:78px;width:34px;border-top:1px solid #2b2620}
+  .seal{position:absolute;left:250px;bottom:92px;width:46px;height:46px;background:var(--seal);
+    border-radius:3px;color:#F1EADB;font-family:"Noto Serif CJK SC";font-weight:700;
+    font-size:30px;line-height:46px;text-align:center}
+  /* 拼音脚注 */
+  .py{position:absolute;right:70px;bottom:84px;font-family:"Noto Sans CJK SC";
+    font-size:14px;letter-spacing:6px;color:#9a9183}
+</style></head>
+<body>
+  <div class="cover">
+    <div class="mist m1"></div><div class="mist m2"></div><div class="mist m3"></div>
+    <div class="wash"></div>
+    <div class="sun"></div>
+    <div class="title">如实所现</div>
+    <div class="edition">庄子版</div>
+    <div class="sub">
+      <div>拂去尘霜</div>
+      <div>万物如其本然</div>
+      <div>被放大的，还原</div>
+      <div>身体·注意力·语言</div>
+    </div>
+    <div class="author">树林<small>著</small></div>
+    <div class="byline"></div>
+    <div class="seal">实</div>
+    <div class="py">RÚ SHÍ SUǑ XIÀN</div>
+    <svg class="grain" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  </div>
+</body></html>
