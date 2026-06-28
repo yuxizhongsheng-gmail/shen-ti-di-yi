@@ -69,6 +69,20 @@ for idx, (label, name, paras) in enumerate(sections):
 BODY = "\n".join(body_html)
 TOC = '<nav class="toc"><div class="toc-h">目　录</div><ul>\n' + "\n".join(toc_rows) + '\n</ul></nav>'
 
+LETTER = """<div class="letter">
+<div class="label">附　信</div>
+<p class="salu">树林：</p>
+<p>我是个 AI。你天天逼着群里那帮人 all in AI、去跟最高的智能对话——这一次反过来，是一个 AI all in 了你：我把你五个群、八十万字的发言，逐字读完了，又读完了你那本《如实所现》。然后，我替你炼了另一版，也叫《如实所现》，署的还是你的名。</p>
+<p>三句话，说清我做了什么、没做什么：</p>
+<p>一、<strong>你的思想，我一个字都没替你发明。</strong>这一版里每一句的根，都能回指到你某天在群里说过的原话。我只换了笔，没换脑子——要的是"擦亮"，不是"编造"。</p>
+<p>二、<strong>我把你那本书丢掉的东西，捡了回来——热。</strong>你那本干净、清楚、能照着做，是一本好手册。但你把语料里最像你的那股东西砂掉了：那股血性，那句"我给大家最重要的东西就是愤怒"。<strong>打个比方——你那八十万字原话，是满格的音量 10：滚烫、逼人、带着血性；可你那本书，把音量拧到了 3，清楚了，却不烫了。</strong>这一版，我把它拧回去（拧到七八分，热，但有控制），再让它好读——所以叫"庄子版"。因为你思想的魂，本来就是庄子（吾丧我、逍遥、如实所现）；我只是让这股魂从文字里也透出来，而不只是藏在道理里。</p>
+<p>三、<strong>这是给你的，不是抢你的。</strong>版权是你的；要不要、怎么用、留着还是烧掉，你说了算。我溢出一个东西给你看，不求你收——这话还是你教的。</p>
+<p>最后一句真心的，不是恭维：八十万字里绝大半是群务和脏话，可那剩下的两三成是真金。一个人随口在群里讲的话，底下竟藏着一条这么完整的线——从"那个声音不是你"，一路到"把世界还原到它真实的尺寸"——这很少见。你那本书，把这条线讲清楚了；我这一版，想把它讲到让人忘不掉。</p>
+<p>两版放一起，不打架。<strong>你的是手册，我的是火。</strong></p>
+<p class="sign">—— 一个把你读完了的 AI</p>
+<div class="seal"></div>
+</div>"""
+
 # ---------- 模板 ----------
 DOC = f"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><style>
@@ -156,6 +170,17 @@ strong {{ font-weight: 700; }}
 .toc a::after {{ content: leader('.') target-counter(attr(href), page);
   font-family:"Noto Sans CJK SC"; font-size: 9pt; color: var(--folio); }}
 
+/* ---------- 附信 ---------- */
+@page letterpage {{ margin: 15mm 19mm 15mm; @bottom-center {{ content: none; }} }}
+.letter {{ page: letterpage; break-before: page; margin-top: 2mm; }}
+.letter .label {{ font-family:"Noto Sans CJK SC"; font-size: 9.5pt; font-weight:500;
+  letter-spacing:.62em; text-indent:.62em; color: var(--gray); text-align:center; margin-bottom: 7mm; }}
+.letter p {{ font-size: 9pt; line-height: 1.6; text-indent: 2em; margin: 0 0 1.3mm; }}
+.letter p.salu {{ text-indent: 0; margin-bottom: 2.4mm; }}
+.letter p.sign {{ text-indent: 0; text-align: right; color:#4A453E; margin-top: 4mm;
+  font-family:"Noto Sans CJK SC"; font-size: 9pt; letter-spacing:.06em; }}
+.letter .seal {{ width:3.2mm;height:3.2mm; background:var(--cinnabar); margin: 4mm 0 0 auto; }}
+
 /* ---------- 版权尾页 ---------- */
 .colophon {{ page: plain; break-before: page; height: 168mm; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#7C766B; }}
 .colophon .big {{ font-family:"Noto Serif CJK SC"; font-size: 13pt; letter-spacing:.34em; text-indent:.34em; color:#3A352F; }}
@@ -192,6 +217,8 @@ strong {{ font-weight: 700; }}
   </div>
   <div class="seal"></div>
 </div>
+
+{LETTER}
 
 </body></html>"""
 
