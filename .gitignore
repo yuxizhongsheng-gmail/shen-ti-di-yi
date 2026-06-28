@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 corpus/树林语料_完整版.md
 book/digest/_condensed/
+.fonts/
+qa_*.png
+qa_*.html
+scratch_*
+pgtest.*
