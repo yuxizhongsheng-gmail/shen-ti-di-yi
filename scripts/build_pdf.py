@@ -55,9 +55,15 @@ for idx, (label, name, paras) in enumerate(sections):
     head.append('  <div class="rule"></div>')
     head.append('</header>')
     ps = []
-    for i, p in enumerate(paras):
-        cls = ' class="first"' if i == 0 else ''
+    first_done = False
+    for p in paras:
+        if p.strip() == "◆":                       # 朱砂分节符
+            ps.append('<div class="divider">·　·　·</div>')
+            first_done = False                       # 分节后下一段不缩进
+            continue
+        cls = ' class="first"' if not first_done else ''
         ps.append(f'<p{cls}>{inline(p)}</p>')
+        first_done = True
     body_html.append(f'<section class="chapter" id="{sec_id}">\n{chr(10).join(head)}\n{chr(10).join(ps)}\n</section>')
     # 目录项：前言/后记只显二字；章显 “第N章 · 章名”
     if is_chapter and name:
@@ -155,6 +161,11 @@ body {{
 p {{ margin: 0; text-indent: 2em; orphans: 2; widows: 2; }}
 p.first {{ text-indent: 0; }}
 strong {{ font-weight: 700; }}
+
+/* ---------- 朱砂分节符（让一气呵成的长章，喘口气） ---------- */
+.divider {{ text-align:center; color: var(--cinnabar); font-size: 9pt;
+  letter-spacing:.5em; text-indent:.5em; margin: 7.5mm 0 6.5mm;
+  break-inside: avoid; }}
 
 /* ---------- 目录 ---------- */
 @page toc {{ @bottom-center {{ content: none; }} }}
