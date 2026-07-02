@@ -9,6 +9,7 @@
 ```
 shulin/
 ├── persona-shulin.md        人格总卡：他是谁、思想操作系统、语言指纹、禁区
+├── audience-xiaohongshu.md  人群与情绪地图：六大情绪靶心、情绪→卡库映射、语域校准、30个选题
 ├── voice-xiaohongshu.md     皮肤A·诊断体：五幕结构、标题公式、语言规则、质检门
 ├── voice-xiaohongshu-list.md 皮肤B·认知清单体：三行式条目、排序规则、选题飞轮
 ├── prompt-xiaohongshu.md    生产 prompt：单篇笔记的完整生成流程
@@ -23,7 +24,8 @@ shulin/
 └── samples/                 试写样稿（7 图完整版，含标签/首评/溯源块）
     ├── sample-01-只判20分钟.md          （诊断体）
     ├── sample-02-你在给自己招聘主人.md   （诊断体）
-    └── sample-03-12条狠认知清单.md       （清单体）
+    ├── sample-03-12条狠认知清单.md       （清单体）
+    └── sample-04-治好在意别人怎么想.md   （清单体·情绪靶心版）
 ```
 
 ## 生产流程（每篇 5 步）
