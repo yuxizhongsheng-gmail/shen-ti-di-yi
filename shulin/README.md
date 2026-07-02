@@ -10,6 +10,7 @@
 shulin/
 ├── persona-shulin.md        人格总卡：他是谁、思想操作系统、语言指纹、禁区
 ├── audience-xiaohongshu.md  人群与情绪地图：六大情绪靶心、情绪→卡库映射、语域校准、30个选题
+├── vertical-strategy.md     垂类作战方案：反内耗机制学、「今天不开庭」账号体系、30天排期
 ├── voice-xiaohongshu.md     皮肤A·诊断体：五幕结构、标题公式、语言规则、质检门
 ├── voice-xiaohongshu-list.md 皮肤B·认知清单体：三行式条目、排序规则、选题飞轮
 ├── prompt-xiaohongshu.md    生产 prompt：单篇笔记的完整生成流程
